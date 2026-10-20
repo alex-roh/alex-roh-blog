@@ -24,6 +24,14 @@ const index = posts.findIndex(p => p.id === post.id);
     {toc.length > 0 && <aside class="toc" aria-label="글 목차"><div><p>ON THIS PAGE</p><nav>{toc.map(h => <a class:list={[{sub:h.depth === 3}]} href={`#${h.slug}`}>{h.text}</a>)}</nav></div></aside>}
   </div>
   <script>
+    import { revealSearchTarget } from '../lib/search-target.mjs';
+    function revealMatch() {
+      const root=document.querySelector<HTMLElement>('#article-body')!;
+      revealSearchTarget(root,location.hash,new URLSearchParams(location.search).get('search'));
+    }
+    revealMatch();
+    addEventListener('hashchange',revealMatch);
+    addEventListener('load',revealMatch,{once:true});
     const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
     const headings = links.map(a => document.getElementById(decodeURIComponent(a.hash.slice(1))))!;
     let scheduled = false;
