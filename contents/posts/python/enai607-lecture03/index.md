@@ -6,7 +6,6 @@ update: 2026-10-20
 tags:
   - python
   - ENAI607
-  - open-book
 series: "ENAI607 Python"
 ---
 
@@ -94,7 +93,7 @@ sorted(d.items(), key=lambda pair: pair[1], reverse=True)
 
 ## 1. 딕셔너리 dict — key로 value 찾기
 
-딕셔너리는 **key와 value의 대응 관계(mapping)**를 저장한다. key를 알면 대응하는 value를 찾는다. 리스트처럼 위치로 찾는 자료형은 아니다. 해시 테이블을 사용하므로 일반적인 key 조회가 효율적이다.
+딕셔너리는 **key와 value의 대응 관계(mapping)를** 저장한다. key를 알면 대응하는 value를 찾는다. 리스트처럼 위치로 찾는 자료형은 아니다. 해시 테이블을 사용하므로 일반적인 key 조회가 효율적이다.
 
 ```python
 readings = {
@@ -115,7 +114,7 @@ value에는 숫자, 문자열, 리스트, 튜플, 다른 딕셔너리 등을 넣
 
 ### 1.1 key 규칙 — unique, hashable, immutable
 
-딕셔너리의 key는 **hashable(해시 가능)**이어야 한다. 기본 타입에서는 문자열·숫자·해시 가능한 원소로 이루어진 튜플을 사용할 수 있고, 리스트나 딕셔너리는 사용할 수 없다.
+딕셔너리의 key는 **hashable(해시 가능)이어야** 한다. 기본 타입에서는 문자열·숫자·해시 가능한 원소로 이루어진 튜플을 사용할 수 있고, 리스트나 딕셔너리는 사용할 수 없다.
 
 | 타입 | key 사용 | 예 |
 | --- | --- | --- |
@@ -152,7 +151,7 @@ except KeyError:
     print("없는 센서")  # 없는 센서
 ```
 
-**`get()`**은 key가 없을 때 사용할 기본값을 지정한다.
+**`get()`은** key가 없을 때 사용할 기본값을 지정한다.
 
 ```python
 averages = {"Ava": 24.0}
@@ -234,7 +233,7 @@ print("Ben" in a)  # True
 print(a is b)      # True
 ```
 
-`a.copy()`는 **바깥 딕셔너리만 새로 만드는 얕은 복사(shallow copy)**다. 안쪽 value 객체는 공유한다.
+`a.copy()`는 **바깥 딕셔너리만 새로 만드는 얕은 복사(shallow copy)다**. 안쪽 value 객체는 공유한다.
 
 ```python
 a = {"Ava": [10, 20], "Ben": 15}
@@ -293,11 +292,11 @@ for name, average in data.items():
 # Ben 15.0
 ```
 
-`name, average`는 **튜플 언패킹(unpacking)**이다. `("Ava", 24.0)`의 첫 값을 `name`, 둘째 값을 `average`에 나눠 받는다. `(name, average)`처럼 괄호를 써도 된다.
+`name, average`는 **튜플 언패킹(unpacking)이다**. `("Ava", 24.0)`의 첫 값을 `name`, 둘째 값을 `average`에 나눠 받는다. `(name, average)`처럼 괄호를 써도 된다.
 
 ### 3.1 dict → list
 
-`keys()`, `values()`, `items()` 자체는 리스트가 아니라 **뷰(view)**다. 리스트가 필요하면 `list()`로 변환한다.
+`keys()`, `values()`, `items()` 자체는 리스트가 아니라 **뷰(view)다**. 리스트가 필요하면 `list()`로 변환한다.
 
 ```python
 data = {"Ava": 24.0, "Ben": 15.0}
@@ -498,7 +497,7 @@ parity = "Even" if x % 2 == 0 else "Odd"
 print(parity)  # Odd
 ```
 
-`if/else` **문장(statement)**이 실행할 블록을 고르는 반면, 조건 **표현식(expression)**은 사용할 값 하나를 고른다. 그래서 대입문, `return`, comprehension, lambda 안에 넣을 수 있다.
+`if/else` **문장(statement)이** 실행할 블록을 고르는 반면, 조건 **표현식(expression)은** 사용할 값 하나를 고른다. 그래서 대입문, `return`, comprehension, lambda 안에 넣을 수 있다.
 
 ```python
 def average_or_zero(values):
@@ -1115,7 +1114,7 @@ result = sorted(
 print(result)  # [('Ava', 20.0), ('Ben', 20.0), ('Cara', 15.0)]
 ```
 
-기준을 튜플로 반환하면 앞의 기준부터 비교한다. `-평균`으로 평균 내림차순, 이름으로 동률 시 오름차순을 만든다. 위 코드에는 `reverse=True`를 추가하지 않는다. 단순 정렬에서 동률이면 Python 정렬은 기존 순서를 유지하는 **안정 정렬(stable sort)**이다.
+기준을 튜플로 반환하면 앞의 기준부터 비교한다. `-평균`으로 평균 내림차순, 이름으로 동률 시 오름차순을 만든다. 위 코드에는 `reverse=True`를 추가하지 않는다. 단순 정렬에서 동률이면 Python 정렬은 기존 순서를 유지하는 **안정 정렬(stable sort)이다**.
 
 <a id="sensor-example"></a>
 

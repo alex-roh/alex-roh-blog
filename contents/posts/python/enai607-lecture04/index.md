@@ -6,7 +6,6 @@ update: 2026-10-20
 tags:
   - python
   - ENAI607
-  - open-book
 series: "ENAI607 Python"
 ---
 
@@ -97,7 +96,7 @@ with open(path, "rb") as fobj:
 실행 순서는 다음과 같다.
 
 1. 문제가 생기면 예외 객체가 발생한다.
-2. 현재 코드를 감싼 `try`의 처리기 중 **종류가 맞는 `except`**를 찾는다.
+2. 현재 코드를 감싼 `try`의 처리기 중 **종류가 맞는 `except`를** 찾는다.
 3. 없으면 호출한 함수 쪽으로 전달되어 처리기를 계속 찾는다.
 4. 끝까지 처리기가 없으면 일반 스크립트 실행은 traceback을 출력하며 종료된다.
 
@@ -467,7 +466,7 @@ finally:
 
 모듈은 관련 함수와 객체를 묶는 단위다. 직접 만드는 경우 보통 `.py` 파일 하나가 모듈이 된다. 표준 라이브러리나 확장 모듈에는 컴파일된 구현도 있다.
 
-모듈마다 **namespace(이름 공간)**가 있어 같은 함수 이름을 구분한다. 예를 들어 `math.exp`, `cmath.exp`, `numpy.exp`는 모두 `exp`라는 이름을 쓰지만 소속 모듈이 다르다.
+모듈마다 **namespace(이름 공간)가** 있어 같은 함수 이름을 구분한다. 예를 들어 `math.exp`, `cmath.exp`, `numpy.exp`는 모두 `exp`라는 이름을 쓰지만 소속 모듈이 다르다.
 
 ### 7.1 import module_name
 
@@ -689,7 +688,7 @@ with open("mode_demo.txt", "r", encoding="utf-8") as fobj:
 
 ### 10.3 FileNotFoundError — 현재 폴더와 스크립트 폴더는 다를 수 있다
 
-`open("sensor_data.txt")`는 일반적으로 **현재 작업 폴더(current working directory)**에서 찾는다. `.py` 파일 옆에서 자동으로 찾는다는 뜻이 아니다.
+`open("sensor_data.txt")`는 일반적으로 **현재 작업 폴더(current working directory)에서** 찾는다. `.py` 파일 옆에서 자동으로 찾는다는 뜻이 아니다.
 
 ```python
 from pathlib import Path
@@ -722,7 +721,7 @@ r"C:\Users\Alex\Documents\hello.txt"   # raw 문자열
 
 ## 11. 텍스트 읽기 — readline / readlines / read / 파일 순회
 
-다음 공통 준비 코드를 한 번 실행하면 읽기 예제에 쓸 **`hello.txt`**가 만들어진다. 첫 줄, 빈 줄, 마지막 줄이 있으며 마지막 줄 끝에는 줄바꿈이 없다.
+다음 공통 준비 코드를 한 번 실행하면 읽기 예제에 쓸 **`hello.txt`가** 만들어진다. 첫 줄, 빈 줄, 마지막 줄이 있으며 마지막 줄 끝에는 줄바꿈이 없다.
 
 ```python
 with open("hello.txt", "w", encoding="utf-8") as fobj:
@@ -785,7 +784,7 @@ with open("hello.txt", "r", encoding="utf-8") as fobj:
 
 파일 전체를 리스트로 만들지 않고 한 줄씩 처리한다. 큰 파일에서 `readlines()`로 모두 담는 것보다 메모리 사용을 줄일 수 있다.
 
-`print(line)`은 `line` 안의 `\n` 뒤에 `print()`의 줄바꿈을 하나 더 붙일 수 있다. 원래 줄바꿈을 유지하려면 **`print(line, end="")`**를 사용한다.
+`print(line)`은 `line` 안의 `\n` 뒤에 `print()`의 줄바꿈을 하나 더 붙일 수 있다. 원래 줄바꿈을 유지하려면 **`print(line, end="")`를** 사용한다.
 
 ### 11.5 readlines — 줄 리스트
 
@@ -829,7 +828,7 @@ fields = [field.strip() for field in line.split(",")]
 print(fields)  # ['Ava', '10', '20']
 ```
 
-`line.strip()`은 줄 전체 양끝만 정리한다. **각 필드의 공백까지 제거하려면 필드마다 `strip()`**한다. 문자열은 불변이므로 반환값을 사용해야 한다. `line.strip()`만 호출하고 결과를 버리면 원래 `line`은 바뀌지 않는다.
+`line.strip()`은 줄 전체 양끝만 정리한다. **각 필드의 공백까지 제거하려면 필드마다 `strip()`한다**. 문자열은 불변이므로 반환값을 사용해야 한다. `line.strip()`만 호출하고 결과를 버리면 원래 `line`은 바뀌지 않는다.
 
 ### 12.2 빈 줄은 먼저 제외
 
@@ -1007,7 +1006,7 @@ print(decoded)       # 한글
 
 ## 15. with — context manager와 자동 close
 
-파일은 읽기·쓰기가 끝나면 닫아야 한다. 직접 `close()`를 호출하는 대신 **정리 작업을 보장하는 문맥 관리자(context manager)**를 사용할 수 있다. `open()`이 반환하는 파일 객체는 문맥 관리자로 동작한다.
+파일은 읽기·쓰기가 끝나면 닫아야 한다. 직접 `close()`를 호출하는 대신 **정리 작업을 보장하는 문맥 관리자(context manager)를** 사용할 수 있다. `open()`이 반환하는 파일 객체는 문맥 관리자로 동작한다.
 
 ```text
 with open(path, mode, encoding="utf-8") as fobj:
@@ -1073,7 +1072,7 @@ print(source.closed, target.closed)  # True True
 
 **목표:** 파일을 읽고, 빈 줄을 제외하고, 잘못된 줄은 전체를 버리며, 같은 센서의 값을 누적한다. 그다음 평균을 내림차순으로 정렬해 파일에 보고서를 쓴다.
 
-작업 폴더에 **`sensor_data.txt`**를 다음 내용으로 저장한다. `Bad`는 숫자 변환 실패, `NoValues`는 측정값 없음, `,1,2`는 이름 없음이다. 빈 줄은 오류가 아니다.
+작업 폴더에 **`sensor_data.txt`를** 다음 내용으로 저장한다. `Bad`는 숫자 변환 실패, `NoValues`는 측정값 없음, `,1,2`는 이름 없음이다. 빈 줄은 오류가 아니다.
 
 ```text
 Ava,10,20,30
