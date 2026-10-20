@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="검색"><div class="container"><header class="page-heading"><p class="eyebrow">FIND A NOTE</p><h1>검색</h1><p>제목과 본문, 코드 속 단어까지 찾아보세요.</p></header><form id="search-form" role="search"><label class="sr-only" for="query">검색어</label><input id="query" name="q" type="search" placeholder="예: lambda, 예외 처리, fields[1:]" autocomplete="off" /><button type="submit">검색</button></form><p id="search-status" role="status">검색어를 입력하세요.</p><div id="search-results" class="post-list"></div><noscript>검색 기능을 사용하려면 JavaScript를 켜주세요.</noscript></div>
+<script>
+ import { searchPosts } from '../lib/search.mjs';
+ import { href } from '../lib/urls';
+ const input = document.querySelector<HTMLInputElement>('#query')!;
+ const form = document.querySelector<HTMLFormElement>('#search-form')!;
+ const status = document.querySelector('#search-status')!;
+ const results = document.querySelector('#search-results')!;
+ let data: Promise<any[]> | undefined;
+ let request = 0;
+ async function search() {
+  const id = ++request; const query = input.value.trim();
+  const url = new URL(location.href); query ? url.searchParams.set('q', query) : url.searchParams.delete('q');
+  history.replaceState(null,'',url); results.replaceChildren();
+  if (!query) { status.textContent='검색어를 입력하세요.'; return; }
+  status.textContent='검색 중…';
+  try {
+   data ??= fetch(href('search-index.json')).then(r => { if (!r.ok) throw Error('Search unavailable'); return r.json(); });
+   const matches = searchPosts(await data, query);
+   if (id !== request) return;
+   status.textContent=`${matches.length}개의 글을 찾았습니다.`;
+   for (const post of matches) {
+    const article=document.createElement('article'); article.className='post-card';
+    const heading=document.createElement('h2'); const a=document.createElement('a'); a.href=post.url; a.textContent=post.title; heading.append(a);
+    const p=document.createElement('p'); p.textContent=post.snippet; article.append(heading,p); results.append(article);
+   }
+  } catch { data=undefined; if (id === request) status.textContent='검색 데이터를 불러오지 못했습니다. 다시 시도해주세요.'; }
+ }
+ form.addEventListener('submit', e => {e.preventDefault(); search();});
+ let timer: ReturnType<typeof setTimeout>;
+ input.addEventListener('input', () => { clearTimeout(timer); timer=setTimeout(search,150); });
+ input.value=new URLSearchParams(location.search).get('q') || ''; if (input.value) search();
+</script>
+</Base>

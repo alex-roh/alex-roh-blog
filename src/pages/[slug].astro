@@ -1,0 +1,49 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { allPosts, postHref, seriesPosts, seriesHref, tagHref, formatDate, excerpt } from '../lib/posts';
+export async function getStaticPaths() { return (await allPosts()).map(post => ({params:{slug:post.id},props:{post}})); }
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const posts = await allPosts();
+const related = post.data.series ? seriesPosts(posts, post.data.series) : [];
+const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
+const attachments = Object.keys(import.meta.glob('/contents/posts/**/*.{py,pdf,zip}')).filter(p => p.split('/').at(-2) === post.id).map(p => p.split('/').at(-1)!);
+const index = posts.findIndex(p => p.id === post.id);
+---
+<Base title={post.data.title} description={excerpt(post)}>
+  <div class="article-shell">
+    <article class="article">
+      <header class="article-header"><h1>{post.data.title}</h1><div class="article-meta"><b>@Alex</b>{post.data.date && <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>}</div><div class="tags">{post.data.tags.map(tag => <a href={tagHref(tag)}>#{tag}</a>)}</div></header>
+      {related.length > 0 && <section class="series-box" aria-label="같은 시리즈 글"><h2><a href={seriesHref(post.data.series!)}>SERIES: {post.data.series}</a><span>({related.length})</span></h2><ol>{related.map(p => <li><a href={postHref(p)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}{p.id === post.id && <span aria-hidden="true"> ←</span>}</a></li>)}</ol></section>}
+      {toc.length > 0 && <details class="mobile-toc"><summary>이 글의 목차</summary><nav aria-label="본문 목차">{toc.map(h => <a class:list={[{sub:h.depth === 3}]} href={`#${h.slug}`}>{h.text}</a>)}</nav></details>}
+      <div id="article-body" class="prose"><Content /></div>
+      {attachments.length > 0 && <aside class="attachments"><h2>첨부 파일</h2>{attachments.map(name => <a download href={`${import.meta.env.BASE_URL}media/${post.id}/${name}`}>{name} ↓</a>)}</aside>}
+      <nav class="post-neighbors" aria-label="다른 글">{posts[index+1] && <a href={postHref(posts[index+1])}><span>이전 글</span>{posts[index+1].data.title}</a>}{posts[index-1] && <a href={postHref(posts[index-1])}><span>다음 글</span>{posts[index-1].data.title}</a>}</nav>
+    </article>
+    {toc.length > 0 && <aside class="toc" aria-label="글 목차"><div><p>ON THIS PAGE</p><nav>{toc.map(h => <a class:list={[{sub:h.depth === 3}]} href={`#${h.slug}`}>{h.text}</a>)}</nav></div></aside>}
+  </div>
+  <script>
+    const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+    const headings = links.map(a => document.getElementById(decodeURIComponent(a.hash.slice(1))))!;
+    let scheduled = false;
+    function update() {
+      let active = 0;
+      headings.forEach((h,i) => { if (h && h.getBoundingClientRect().top <= 160) active = i; });
+      links.forEach((a,i) => i === active ? a.setAttribute('aria-current','location') : a.removeAttribute('aria-current'));
+      scheduled = false;
+    }
+    addEventListener('scroll', () => { if (!scheduled) { scheduled=true; requestAnimationFrame(update); } }, {passive:true});
+    update();
+    document.querySelectorAll<HTMLPreElement>('.prose pre').forEach(pre => {
+      const button = document.createElement('button');
+      button.className='copy-code'; button.textContent='복사'; button.setAttribute('aria-label','코드 복사');
+      button.addEventListener('click', async () => {
+        try { await navigator.clipboard.writeText(pre.querySelector('code')?.textContent || ''); button.textContent='복사됨'; }
+        catch { button.textContent='복사 실패'; }
+        setTimeout(() => button.textContent='복사', 1600);
+      });
+      pre.append(button);
+    });
+  </script>
+</Base>
