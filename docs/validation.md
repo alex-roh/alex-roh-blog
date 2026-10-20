@@ -15,3 +15,11 @@ Validated on 2026-10-20 with Node 24.19.0 and Astro 7.4.1.
 - Original Gatsby working tree clean and unchanged.
 
 The public remote repository was created separately. No production switchover has been performed.
+
+## Archive change (2026-10-20)
+
+- Nine older posts moved to archive/posts with their six images and two Python attachments.
+- All 17 archived files matched the original SHA-256 manifest.
+- Build succeeded with two published ENAI607 posts.
+- Search index contains only the two ENAI607 posts; archived routes, media, RSS and sitemap entries are absent.
+- Existing production site still serves Gatsby 2.32.13; no production deployment was changed.

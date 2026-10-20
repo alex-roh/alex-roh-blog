@@ -41,6 +41,12 @@ seriesOrder: 3
 `seriesOrder`는 선택 사항입니다. 지정하지 않으면 시리즈는 날짜 오름차순,
 날짜가 없는 글은 제목 순서로 정렬됩니다. 홈은 최신 날짜순, 날짜 없는 글은 마지막입니다.
 
+## 보관된 옛 글
+
+이전 글 9개는 `archive/posts/`에 이미지·첨부 파일과 함께 보관합니다.
+이 폴더는 블로그, 검색, 태그, 시리즈, RSS와 사이트맵에 포함되지 않습니다.
+다시 게시하려면 해당 글 폴더를 `contents/posts/`로 옮기세요.
+
 ## 제공 기능
 
 - 시리즈 보관함과 시리즈별 글 목록
@@ -53,24 +59,35 @@ seriesOrder: 3
 검색 데이터는 빌드 시 생성되며 별도 API 서버나 유료 검색 서비스가 필요하지 않습니다.
 검색은 대소문자를 구분하지 않는 문자열 검색이며 형태소·오타 교정은 제공하지 않습니다.
 
-## 배포와 기존 블로그
+## 실제 사이트 배포
 
-기존 `alex-roh.github.io` 저장소는 변경하지 않습니다.
-이 저장소는 개발·검토용이며 기존 사이트 교체는 별도 전환 작업입니다.
+소스 저장소: `alex-roh/alex-roh-blog`
+실제 주소: https://alex-roh.github.io/
 
-GitHub Pages 미리보기:
+사용자 사이트 주소를 유지하기 위해 `alex-roh/alex-roh.github.io` 저장소의
+`Deploy Astro to alex-roh.github.io` Actions가 이 저장소의 소스를 가져와
+검사·빌드한 뒤 GitHub Pages에 배포합니다. 별도의 개인 액세스 토큰은 필요하지 않습니다.
 
-1. 이 저장소 Settings → Pages → Source를 GitHub Actions로 설정합니다.
-2. Actions → Deploy preview to GitHub Pages → Run workflow.
-3. 미리보기 주소: https://alex-roh.github.io/alex-roh-blog/
+글을 수정한 뒤:
 
-미리보기는 검색 엔진 중복 노출을 막기 위해 noindex입니다.
-GitHub Pages 배포는 수동 실행으로 한정했고, 일반 push에서는 검사만 실행합니다.
+1. 이 저장소의 `main`에 Push합니다.
+2. https://github.com/alex-roh/alex-roh.github.io/actions/workflows/deploy-astro.yml
+   에서 Run workflow를 누릅니다. `source_ref`는 기본 `main`으로 둡니다.
+3. 배포가 성공하면 실제 사이트를 확인합니다.
 
-최종 전환 때는 기존 사용자 사이트 저장소에서 이 소스를 빌드·배포하도록 구성하거나,
-명시적인 배포 권한을 설정해 이 저장소에서 기존 사용자 사이트로 결과물을 보냅니다.
-`SITE_BASE`를 지정하지 않은 기본 빌드는 기존 루트 주소와 동일한 경로를 생성합니다.
-토큰·비밀번호는 이 저장소에 저장하지 마세요.
+소스 저장소 Push만으로 실제 사이트가 자동 배포되지는 않습니다.
+배포를 실행할 때 최신 main을 가져오며, 필요하면 source_ref에 특정 커밋을 지정할 수 있습니다.
+
+기존 Gatsby 소스와 gh-pages 브랜치는 복구용으로 유지합니다.
+복구가 필요하면 사용자 사이트 저장소 Settings → Pages의 Source를
+Deploy from a branch / gh-pages / (root)로 되돌립니다.
+
+## 선택: 별도 미리보기 배포
+
+이 저장소 Settings → Pages → Source를 GitHub Actions로 설정하고,
+Actions → Deploy preview to GitHub Pages → Run workflow를 실행합니다.
+주소: https://alex-roh.github.io/alex-roh-blog/
+미리보기는 중복 검색 노출을 막기 위해 noindex이며 수동 배포입니다.
 
 ## 이후 확장
 

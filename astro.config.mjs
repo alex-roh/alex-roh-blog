@@ -10,7 +10,6 @@ export default defineConfig({
   base: process.env.SITE_BASE || '/',
   trailingSlash: 'always',
   output: 'static',
-  redirects: { '/boj/4375': '/b-4375/' },
   integrations: [sitemap()],
   markdown: {
     processor: unified({
