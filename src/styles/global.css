@@ -19,3 +19,14 @@
 #query{color:var(--ink)}#query::placeholder{color:var(--muted)}
 [data-theme="dark"] .prose .astro-code,[data-theme="dark"] .prose .astro-code span{color:var(--shiki-dark)!important;background-color:var(--shiki-dark-bg)!important}
 @media(max-width:700px){.header-controls{gap:12px}.site-header nav{gap:13px}.theme-toggle{width:32px;height:32px;padding:6px}}
+
+/* Bilingual problem statements: prose wraps naturally; only samples use code. */
+.problem-statement{margin:24px 0 32px;padding:22px 24px;border:1px solid var(--line);border-radius:8px;overflow-wrap:anywhere}
+.problem-statement[lang="en"]{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.85}
+.problem-statement>h4:first-child{margin-top:0;font-size:20px;color:var(--accent)}
+.problem-statement h5{font-size:18px;line-height:1.7;margin:26px 0 14px}
+.problem-statement p{margin-bottom:17px}
+.problem-statement li{margin-bottom:9px}
+.problem-statement pre,.problem-statement pre code{white-space:pre-wrap;overflow-wrap:anywhere}
+.problem-statement pre{padding:24px 16px 16px;font-size:13px}
+@media(max-width:600px){.problem-statement{padding:18px 14px}.problem-statement h5{font-size:17px}}

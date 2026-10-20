@@ -13,7 +13,7 @@ series: "ENAI607 Python"
 
 파일에서 값을 읽고 보고서를 만드는 문제, 센서 클래스를 상속하는 문제, NumPy로 계산하고 그래프를 그리는 문제. 세 문제는 소재가 같아도 **입력 검증 규칙과 반드시 써야 하는 문법이 서로 다르다.** 코드를 가져다 쓸 때는 숫자나 이름만 바꾸기 전에 요구조건부터 맞춰야 한다.
 
-이 글은 제공된 **Practice Midterm — Set A의 비공식 연습문제**를 한 문제씩 풀어 본다. 각 문제는 **원문 → 요구조건과 접근 순서 → 한국어 주석 전체 코드와 실행 결과 → 헷갈리는 지점 → 변형 대응법** 순서다. 원문은 접어 두었고, 문제 조건이 기억나면 바로 풀이·코드로 이동하면 된다. 원문의 문구와 예제는 유지하되 반복 머리글·쪽 번호는 제외했다.
+이 글은 제공된 **Practice Midterm — Set A의 비공식 연습문제**를 한 문제씩 풀어 본다. 각 문제는 **원문 → 요구조건과 접근 순서 → 한국어 주석 전체 코드와 실행 결과 → 헷갈리는 지점 → 변형 대응법** 순서다. 각 문제는 읽기 편한 영어 본문 바로 아래에 한국어 전체 번역을 배치했다. 문제 조건이 기억나면 목차에서 풀이·코드로 바로 이동하면 된다. 원문의 문구와 예제는 유지하되 반복 머리글·쪽 번호는 제외했다.
 
 **처음 읽을 때:** 접근 순서를 이해한 뒤 전체 코드를 한 번 실행하고, 원문과 요구조건 표를 확인한다. **문제를 풀다가 막혔을 때:** 아래 유형별 표에서 필요한 부분으로 이동하거나 `Ctrl+F`로 `extend`, `classmethod`, `super`, `argmax`, `density` 같은 키워드를 찾는다.
 
@@ -74,21 +74,39 @@ PowerShell에서 Python 실행 파일의 전체 경로를 따옴표로 감싸 �
 | 출력 정밀도 | 평균 `.2f` | `__str__`의 평균 `.2f` | 통계 예시는 `.6f`; 저장값은 원래 정밀도 |
 
 <details>
-<summary>공통 안내 원문 펼치기</summary>
+<summary>공통 안내 · English / 한국어</summary>
 
-```text
+<section class="problem-statement" lang="en">
+
+#### English · 문제 원문
+
 ENAI 607 Python Programming for Engineering AI
- Fall 2026
- Practice Midterm - Set A
- UNOFFICIAL PRACTICE MATERIAL - NOT A UNIVERSITY EXAM OR AN ASSIGNED HOMEWORK
-Instructions. Write and test Python programs for the three problems below. Each problem contains several related
-tasks; your program must satisfy all stated requirements, not only reproduce the example output. Where a specific
-Python construct is required (such as a list comprehension, lambda function, class method, or vectorized expression),
-use that construct explicitly. Include meaningful tests and show the resulting outputs. You may use built-in Python
-facilities, and NumPy / Matplotlib for Problem 3. No model answers are included.
-Study scope: Lectures 1-6; lists, tuples, dictionaries, strings, control flow, functions, exception handling, files/modules, classes and
-inheritance, NumPy arrays, and basic plotting. The suggested point values are for self-assessment only (30 + 35 + 35 = 100 points).
-```
+
+Fall 2026
+
+Practice Midterm - Set A
+
+UNOFFICIAL PRACTICE MATERIAL - NOT A UNIVERSITY EXAM OR AN ASSIGNED HOMEWORK
+
+Instructions. Write and test Python programs for the three problems below. Each problem contains several related tasks; your program must satisfy all stated requirements, not only reproduce the example output. Where a specific Python construct is required (such as a list comprehension, lambda function, class method, or vectorized expression), use that construct explicitly. Include meaningful tests and show the resulting outputs. You may use built-in Python facilities, and NumPy / Matplotlib for Problem 3. No model answers are included.
+
+Study scope: Lectures 1-6; lists, tuples, dictionaries, strings, control flow, functions, exception handling, files/modules, classes and inheritance, NumPy arrays, and basic plotting. The suggested point values are for self-assessment only (30 + 35 + 35 = 100 points).
+
+</section>
+
+<section class="problem-statement" lang="ko">
+
+#### 한국어 · 전체 번역
+
+**ENAI 607 — 공학 AI를 위한 Python 프로그래밍 / 2026년 가을 / 연습 중간고사 Set A**
+
+**비공식 연습 자료이며, 대학 시험이나 배정된 과제가 아니다.**
+
+**지침:** 아래 세 문제의 Python 프로그램을 작성하고 테스트하시오. 각 문제에는 서로 연관된 작업이 여러 개 있으므로, 예제 출력만 재현하는 데 그치지 말고 명시된 모든 요구사항을 충족해야 한다. list comprehension, lambda 함수, 클래스 메서드, 벡터화 표현식 등 특정 Python 문법을 요구하면 그 문법을 명시적으로 사용하시오. 의미 있는 테스트를 포함하고 실행 결과를 제시하시오. Python 내장 기능을 사용할 수 있으며, 문제 3에서는 NumPy와 Matplotlib을 사용할 수 있다. 원문에는 모범답안이 포함되어 있지 않다.
+
+**학습 범위:** Lectures 1–6의 리스트·튜플·딕셔너리·문자열·제어 흐름·함수·예외 처리·파일과 모듈·클래스와 상속·NumPy 배열·기본 그래프. 제안된 배점은 자가 평가용이며, 30 + 35 + 35 = 총 100점이다.
+
+</section>
 
 </details>
 
@@ -100,57 +118,125 @@ inheritance, NumPy arrays, and basic plotting. The suggested point values are fo
 
 ### 1-1. 문제 원문
 
-<details>
-<summary>Problem 1 영문 원문 전체 펼치기</summary>
+<section class="problem-statement" lang="en">
+
+#### English · 문제 원문
+
+##### Problem 1. Processing and Summarizing Sensor Measurements (30 points)
+
+Write and test a Python script that reads measurement records from a CSV-formatted text file, organizes the measurements by sensor name, and produces a formatted report. A sensor may appear more than once in the input file. The file name shall be supplied to the program as an input string. Each nonempty input line is intended to contain the sensor name followed by one or more numeric readings, separated by commas. White-space characters may appear before and after individual fields. An input line containing an invalid numeric value must be ignored completely, and the number of invalid lines must be counted.
+
+Create a text file named sensor_data.txt with the following content and use it to test your program:
 
 ```text
-Problem 1. Processing and Summarizing Sensor Measurements (30 points)
-Write and test a Python script that reads measurement records from a CSV-formatted text file, organizes the
-measurements by sensor name, and produces a formatted report. A sensor may appear more than once in the input
-file. The file name shall be supplied to the program as an input string. Each nonempty input line is intended to
-contain the sensor name followed by one or more numeric readings, separated by commas. White-space characters
-may appear before and after individual fields. An input line containing an invalid numeric value must be ignored
-completely, and the number of invalid lines must be counted.
-Create a text file named sensor_data.txt with the following content and use it to test your program:
 Ava,10,20,30
 Ben,5,15,25
 Ava,20,40
 Cara,8,12,16
 Bad,3,hello,4
-P1.1. File input and data organization
-Define a function load_readings(filename) that reads the file line by line using the with open(...) statement. Use the
-strip() and split() string methods, and convert each reading to a float. Store the readings in a dictionary: the keys
-shall be sensor names (strings), and the associated values shall be lists of numeric readings. If a sensor name appears
-on more than one line, append the new readings to the existing list. Ignore empty lines without counting them as
-errors. For any nonempty line having no numeric readings or an invalid numeric reading, increment an error counter,
-discard the entire line, and continue processing. Use try/except to handle numeric conversion errors. The function
-must return a tuple containing the completed dictionary and the number of invalid lines.
-P1.2. Functions and comprehensions
-Define a function calculate_average(values) that takes a nonempty list of numeric values and returns their
-arithmetic average. Then, using the dictionary returned by load_readings(), create a new dictionary that maps each
-sensor name to its average reading. You must use a dictionary comprehension for this task; an ordinary for-loop
-used to construct this second dictionary will not satisfy the requirement. Create a separate list containing the names
-of sensors whose average is at least 15.0. You must use a list comprehension with a filtering condition for this list.
-P1.3. Sorting and conditional expressions
-Sort the sensor names in decreasing order of their average readings. The sort operation must use sorted() with a
-lambda function supplied through the key parameter. For each sensor, assign the status string HIGH if its average is
-at least 20.0; otherwise assign LOW. Determine each status with a one-line conditional expression (the form
-value_if_true if condition else value_if_false).
-P1.4. Formatted output
-Write the sorted sensor report into a file named summary.txt. Use enumerate() to number the sensor entries starting
-at 1. Each entry shall show the sensor name, number of valid readings, average rounded to two decimal places, and
-status. At the end, output the number of invalid lines and the list of sensors whose averages are at least 15.0. For the
-input file above, the content of the output file must be:
+```
+
+##### P1.1. File input and data organization
+
+Define a function `load_readings(filename)` that reads the file line by line using the with `open(...)` statement. Use the `strip()` and `split()` string methods, and convert each reading to a float. Store the readings in a dictionary: the keys shall be sensor names (strings), and the associated values shall be lists of numeric readings. If a sensor name appears on more than one line, append the new readings to the existing list. Ignore empty lines without counting them as errors. For any nonempty line having no numeric readings or an invalid numeric reading, increment an error counter, discard the entire line, and continue processing. Use try/except to handle numeric conversion errors. The function must return a tuple containing the completed dictionary and the number of invalid lines.
+
+##### P1.2. Functions and comprehensions
+
+Define a function `calculate_average(values)` that takes a nonempty list of numeric values and returns their arithmetic average. Then, using the dictionary returned by `load_readings()`, create a new dictionary that maps each sensor name to its average reading. You must use a dictionary comprehension for this task; an ordinary for-loop used to construct this second dictionary will not satisfy the requirement. Create a separate list containing the names of sensors whose average is at least 15.0. You must use a list comprehension with a filtering condition for this list.
+
+##### P1.3. Sorting and conditional expressions
+
+Sort the sensor names in decreasing order of their average readings. The sort operation must use `sorted()` with a lambda function supplied through the key parameter. For each sensor, assign the status string HIGH if its average is at least 20.0; otherwise assign LOW. Determine each status with a one-line conditional expression (the form value_if_true if condition else value_if_false).
+
+##### P1.4. Formatted output
+
+Write the sorted sensor report into a file named summary.txt. Use `enumerate()` to number the sensor entries starting at 1. Each entry shall show the sensor name, number of valid readings, average rounded to two decimal places, and status. At the end, output the number of invalid lines and the list of sensors whose averages are at least 15.0. For the input file above, the content of the output file must be:
+
+```text
 1. Ava: count = 5, average = 24.00, status = HIGH
 2. Ben: count = 3, average = 15.00, status = LOW
 3. Cara: count = 3, average = 12.00, status = LOW
 Invalid lines: 1
 Sensors with average >= 15.0: ['Ava', 'Ben']
-Test your program with a second file containing a blank line, extra spaces, and a repeated sensor name. Your implementation must
-not depend on the order of the input records.
 ```
 
-</details>
+Test your program with a second file containing a blank line, extra spaces, and a repeated sensor name. Your implementation must not depend on the order of the input records.
+
+</section>
+
+<section class="problem-statement" lang="ko">
+
+#### 한국어 · 전체 번역
+
+##### 문제 1. 센서 측정값 처리와 요약 (30점)
+
+CSV 형식의 텍스트 파일에서 측정 기록을 읽어 센서 이름별로 정리하고, 지정된 형식의 보고서를 만드는 Python 스크립트를 작성하고 테스트하시오. 입력 파일에는 같은 센서가 여러 번 나타날 수 있다. 파일 이름은 문자열 입력으로 프로그램에 전달해야 한다.
+
+비어 있지 않은 각 입력 줄은 센서 이름과 하나 이상의 숫자 측정값으로 구성되며, 각 항목은 쉼표로 구분된다. 항목 앞뒤에는 공백 문자가 있을 수 있다. **올바르지 않은 숫자 값이 들어 있는 줄은 전체를 무시하고, 잘못된 줄의 개수를 세어야 한다.**
+
+다음 내용으로 `sensor_data.txt` 파일을 만들어 프로그램을 테스트하시오.
+
+```text
+Ava,10,20,30
+Ben,5,15,25
+Ava,20,40
+Cara,8,12,16
+Bad,3,hello,4
+```
+
+##### P1.1. 파일 입력과 데이터 구성
+
+`with open(...)` 문으로 파일을 한 줄씩 읽는 함수 `load_readings(filename)`을 정의하시오.
+
+- 문자열 메서드 `strip()`과 `split()`을 사용하고, 각 측정값을 `float`로 변환하시오.
+- 측정값은 딕셔너리에 저장하시오. key는 센서 이름인 문자열, value는 숫자 측정값 리스트다.
+- 같은 센서 이름이 여러 줄에 나타나면 새 측정값을 기존 리스트에 이어 붙이시오.
+- 빈 줄은 무시하며 오류 개수에 포함하지 마시오.
+- 비어 있지 않은 줄에 숫자 측정값이 없거나 잘못된 숫자 측정값이 있으면, 오류 카운터를 증가시키고 **그 줄 전체를 버린 뒤** 다음 줄을 처리하시오.
+- 숫자 변환 오류는 `try/except`로 처리하시오.
+
+이 함수는 완성된 딕셔너리와 잘못된 줄의 개수를 담은 **튜플**을 반환해야 한다.
+
+##### P1.2. 함수와 comprehension
+
+비어 있지 않은 숫자 리스트를 받아 산술평균을 반환하는 함수 `calculate_average(values)`를 정의하시오.
+
+그다음 `load_readings()`가 반환한 딕셔너리를 사용해, 각 센서 이름을 해당 센서의 평균 측정값에 연결하는 새 딕셔너리를 만드시오. **반드시 dictionary comprehension을 사용해야 한다.** 일반 `for`문으로 이 두 번째 딕셔너리를 구성하면 요구사항을 충족하지 못한다.
+
+평균이 **15.0 이상**인 센서 이름만 담은 별도 리스트도 만드시오. 이 리스트에는 **필터 조건을 포함한 list comprehension**을 사용해야 한다.
+
+##### P1.3. 정렬과 조건 표현식
+
+센서 이름들을 평균 측정값의 **내림차순**으로 정렬하시오. 정렬에는 `sorted()`를 사용하고, `key` 인자에 `lambda` 함수를 전달해야 한다.
+
+각 센서의 평균이 **20.0 이상**이면 상태 문자열 `HIGH`, 그렇지 않으면 `LOW`를 부여하시오. 상태는 다음 형태의 한 줄 조건 표현식으로 결정해야 한다.
+
+```text
+value_if_true if condition else value_if_false
+```
+
+##### P1.4. 지정 형식의 출력
+
+정렬된 센서 보고서를 `summary.txt` 파일에 쓰시오. `enumerate()`로 센서 항목에 **1부터 번호**를 붙이시오. 각 항목에는 다음 내용이 있어야 한다.
+
+- 센서 이름
+- 유효한 측정값의 개수
+- 소수점 아래 두 자리로 반올림해 표시한 평균
+- 상태
+
+마지막에는 잘못된 줄의 개수와 평균이 15.0 이상인 센서 이름 리스트를 출력하시오. 위 입력 파일을 사용했을 때 출력 파일의 내용은 다음과 같아야 한다.
+
+```text
+1. Ava: count = 5, average = 24.00, status = HIGH
+2. Ben: count = 3, average = 15.00, status = LOW
+3. Cara: count = 3, average = 12.00, status = LOW
+Invalid lines: 1
+Sensors with average >= 15.0: ['Ava', 'Ben']
+```
+
+빈 줄, 추가 공백, 반복된 센서 이름이 포함된 두 번째 파일로도 테스트하시오. 구현이 입력 기록의 순서에 의존해서는 안 된다.
+
+</section>
 
 <a id="p1-plan"></a>
 
@@ -367,55 +453,53 @@ key=lambda sensor: (-average_data[sensor], sensor)
 
 ### 2-1. 문제 원문
 
-<details>
-<summary>Problem 2 영문 원문 전체 펼치기</summary>
+<section class="problem-statement" lang="en">
 
-```text
-Problem 2. Sensor Classes and Inheritance (35 points)
-Write and test a Python script that defines two classes related by inheritance. The common superclass, Sensor,
-represents a measuring device storing a name, a list of numeric readings, and a unique nonnegative identification
-number. The derived class, CalibratedSensor, represents a sensor whose reported average is modified by a
-calibration scale and offset. Implement the following data fields and methods. Use instance methods for operations
-on one particular sensor object and class variables/methods for information shared by all sensor objects.
-P2.1. The Sensor superclass
-The class Sensor shall have a class variable next_id with an initial value of zero. Its constructor, __init__(self, name,
-readings), receives a nonempty sensor name (string) and a nonempty list of numeric readings. Each new sensor
-object receives the current value of Sensor.next_id as its identification number; Sensor.next_id is then incremented
-by one. The readings must be stored in a private instance variable. The constructor must store a copy of the input
-list, rather than retaining a reference to the supplied mutable list. Check that all readings are numeric and
-nonnegative; raise TypeError for a nonnumeric reading and ValueError for a negative reading, empty readings list, or
-empty name. For this problem, you may assume that the input name and readings container have the required string
-and list types.
+#### English · 문제 원문
+
+##### Problem 2. Sensor Classes and Inheritance (35 points)
+
+Write and test a Python script that defines two classes related by inheritance. The common superclass, Sensor, represents a measuring device storing a name, a list of numeric readings, and a unique nonnegative identification number. The derived class, CalibratedSensor, represents a sensor whose reported average is modified by a calibration scale and offset. Implement the following data fields and methods. Use instance methods for operations on one particular sensor object and class variables/methods for information shared by all sensor objects.
+
+##### P2.1. The Sensor superclass
+
+The class Sensor shall have a class variable next_id with an initial value of zero. Its constructor, `__init__(self, name, readings)`, receives a nonempty sensor name (string) and a nonempty list of numeric readings. Each new sensor object receives the current value of Sensor.next_id as its identification number; Sensor.next_id is then incremented by one. The readings must be stored in a private instance variable. The constructor must store a copy of the input list, rather than retaining a reference to the supplied mutable list. Check that all readings are numeric and nonnegative; raise TypeError for a nonnumeric reading and ValueError for a negative reading, empty readings list, or empty name. For this problem, you may assume that the input name and readings container have the required string and list types.
+
 Implement the following methods:
-•  get_id(): return the identification number of the sensor.
 
-•  get_name(): return the sensor name as a string.
+- `get_id()`: return the identification number of the sensor.
 
-•  get_values(): return a new list containing the stored readings. The caller must not be able to modify the private
- original list through the returned reference.
-•  add_value(value): append a numeric, nonnegative reading; perform the same value validation as the constructor.
+- `get_name()`: return the sensor name as a string.
 
-•  get_average(): calculate and return the average of the stored readings.
+- `get_values()`: return a new list containing the stored readings. The caller must not be able to modify the private original list through the returned reference.
 
-•  __str__(): return a human-readable string containing the sensor identification number, name, number of readings,
- and current average, with the average rounded to two decimal places.
-•  get_sensor_count(): return the total number of Sensor and CalibratedSensor instances created since the start of
- the script. This must be a class method defined with @classmethod, receiving the class as its first parameter
-(conventionally named cls).
-P2.2. The CalibratedSensor subclass
-Define a class CalibratedSensor that inherits from Sensor. Its constructor shall accept name, readings, scale and
-offset. The scale must be a positive numeric value; the offset may be any numeric value. Reject invalid parameters
-with suitable TypeError or ValueError exceptions. Use super().__init__() to initialize the inherited instance fields.
-The class shall override get_average() to compute the corrected average according to the following formula:
+- `add_value(value)`: append a numeric, nonnegative reading; perform the same value validation as the constructor.
+
+- `get_average()`: calculate and return the average of the stored readings.
+
+- `__str__()`: return a human-readable string containing the sensor identification number, name, number of readings, and current average, with the average rounded to two decimal places.
+
+- `get_sensor_count()`: return the total number of Sensor and CalibratedSensor instances created since the start of the script. This must be a class method defined with @classmethod, receiving the class as its first parameter (conventionally named cls).
+
+##### P2.2. The CalibratedSensor subclass
+
+Define a class CalibratedSensor that inherits from Sensor. Its constructor shall accept name, readings, scale and offset. The scale must be a positive numeric value; the offset may be any numeric value. Reject invalid parameters with suitable TypeError or ValueError exceptions. Use `super()`.`__init__()` to initialize the inherited instance fields.
+
+The class shall override `get_average()` to compute the corrected average according to the following formula:
+
+```python
 corrected_average = scale * original_average + offset
-Obtain the original average by invoking the superclass implementation, rather than duplicating the average
-calculation. The inherited add_value() and get_values() methods must remain usable on CalibratedSensor objects.
-P2.3. Class tests and exception handling
-Create Sensor and CalibratedSensor instances, call all implemented methods, and print the results. Demonstrate that
-assigning a new value to an element in the list returned by get_values() does not change the data stored in the object.
-Verify that identification numbers are unique even when the objects belong to different subclasses. Use try/except to
-catch and display the exception when a negative reading is added. Include the following test cases in your script (you
-may add more):
+```
+
+Obtain the original average by invoking the superclass implementation, rather than duplicating the average calculation. The inherited `add_value()` and `get_values()` methods must remain usable on CalibratedSensor objects.
+
+##### P2.3. Class tests and exception handling
+
+Create Sensor and CalibratedSensor instances, call all implemented methods, and print the results. Demonstrate that assigning a new value to an element in the list returned by `get_values()` does not change the data stored in the object.
+
+Verify that identification numbers are unique even when the objects belong to different subclasses. Use try/except to catch and display the exception when a negative reading is added. Include the following test cases in your script (you may add more):
+
+```python
 s1 = Sensor("Ava", [10, 20, 30])
 s2 = CalibratedSensor("Ben", [4, 6], 1.5, 2.0)
 print(s1.get_average())      # 20.0
@@ -423,11 +507,86 @@ print(s2.get_average())      # 9.5
 s1.add_value(40)
 print(s1.get_average())      # 25.0
 print(Sensor.get_sensor_count())  # 2 (if only these were created)
-The creation and calibration operations must never silently modify a previously created sensor object. Do not implement the two
-classes as unrelated, independent classes: the required inheritance relationship, class method, and superclass calls will be checked.
 ```
 
-</details>
+The creation and calibration operations must never silently modify a previously created sensor object. Do not implement the two classes as unrelated, independent classes: the required inheritance relationship, class method, and superclass calls will be checked.
+
+</section>
+
+<section class="problem-statement" lang="ko">
+
+#### 한국어 · 전체 번역
+
+##### 문제 2. 센서 클래스와 상속 (35점)
+
+상속 관계에 있는 두 클래스를 정의하는 Python 스크립트를 작성하고 테스트하시오. 공통 부모 클래스 `Sensor`는 이름, 숫자 측정값 리스트, 그리고 **고유한 0 이상의 식별 번호**를 저장하는 측정 장치를 나타낸다. 자식 클래스 `CalibratedSensor`는 보고할 평균을 보정 배율과 오프셋으로 수정하는 센서다.
+
+아래 필드와 메서드를 구현하시오. 특정 센서 객체 하나에 대한 작업에는 인스턴스 메서드를 사용하고, 모든 센서 객체가 공유하는 정보에는 클래스 변수와 클래스 메서드를 사용하시오.
+
+##### P2.1. 부모 클래스 Sensor
+
+`Sensor` 클래스에는 초기값이 0인 클래스 변수 `next_id`가 있어야 한다. 생성자 `__init__(self, name, readings)`는 비어 있지 않은 센서 이름 문자열과 비어 있지 않은 숫자 측정값 리스트를 받는다.
+
+새 센서 객체마다 현재 `Sensor.next_id` 값을 식별 번호로 부여하고, 이후 `Sensor.next_id`를 1 증가시키시오.
+
+측정값은 **private 인스턴스 변수**에 저장해야 한다. 생성자는 전달받은 가변 리스트의 참조를 그대로 보관하지 말고 **입력 리스트의 복사본**을 저장해야 한다.
+
+모든 측정값이 숫자이며 0 이상인지 검사하시오.
+
+- 숫자가 아닌 측정값이면 `TypeError`를 발생시키시오.
+- 음수 측정값, 빈 측정값 리스트, 빈 이름이면 `ValueError`를 발생시키시오.
+
+이 문제에서는 입력 이름과 측정값 컨테이너가 각각 요구된 문자열 타입과 리스트 타입이라고 가정해도 된다.
+
+다음 메서드를 구현하시오.
+
+- `get_id()`: 센서의 식별 번호를 반환한다.
+- `get_name()`: 센서 이름을 문자열로 반환한다.
+- `get_values()`: 저장된 측정값이 들어 있는 **새 리스트**를 반환한다. 호출자가 반환된 참조를 통해 private 원본 리스트를 변경할 수 없어야 한다.
+- `add_value(value)`: 숫자이며 0 이상인 측정값을 추가한다. 생성자와 같은 값 검증을 수행한다.
+- `get_average()`: 저장된 측정값의 평균을 계산해 반환한다.
+- `__str__()`: 센서 식별 번호, 이름, 측정값 개수, 현재 평균을 포함한 읽기 쉬운 문자열을 반환한다. 평균은 소수점 아래 두 자리로 반올림해 표시한다.
+- `get_sensor_count()`: 스크립트 시작 이후 생성된 **Sensor와 CalibratedSensor 인스턴스의 전체 개수**를 반환한다. 반드시 `@classmethod`로 정의한 클래스 메서드여야 하며, 첫 매개변수로 클래스를 받는다. 이 매개변수의 관례적 이름은 `cls`다.
+
+##### P2.2. 자식 클래스 CalibratedSensor
+
+`Sensor`를 상속하는 `CalibratedSensor` 클래스를 정의하시오. 생성자는 `name`, `readings`, `scale`, `offset`을 받아야 한다.
+
+- `scale`은 **양수인 숫자**여야 한다.
+- `offset`은 어떤 숫자 값이든 가능하다.
+- 잘못된 인자는 적절한 `TypeError` 또는 `ValueError`로 거부하시오.
+
+`super().__init__()`로 상속받은 인스턴스 필드를 초기화하시오. `get_average()`를 재정의하여 다음 공식의 보정 평균을 계산하시오.
+
+```text
+corrected_average = scale * original_average + offset
+```
+
+원래 평균은 평균 계산을 중복 작성하지 말고 **부모 클래스의 구현을 호출해** 얻어야 한다. 상속받은 `add_value()`와 `get_values()`는 `CalibratedSensor` 객체에서도 계속 사용할 수 있어야 한다.
+
+##### P2.3. 클래스 테스트와 예외 처리
+
+`Sensor`와 `CalibratedSensor` 인스턴스를 만들고, 구현한 모든 메서드를 호출해 결과를 출력하시오.
+
+- `get_values()`가 반환한 리스트의 원소에 새 값을 대입해도 객체 안에 저장된 데이터는 바뀌지 않음을 보여 주시오.
+- 객체들이 서로 다른 자식 클래스에 속하더라도 식별 번호가 중복되지 않음을 확인하시오.
+- 음수 측정값을 추가할 때 발생하는 예외를 `try/except`로 잡아 표시하시오.
+
+아래 테스트 사례를 스크립트에 포함하시오. 더 추가해도 된다.
+
+```python
+s1 = Sensor("Ava", [10, 20, 30])
+s2 = CalibratedSensor("Ben", [4, 6], 1.5, 2.0)
+print(s1.get_average())           # 20.0
+print(s2.get_average())           # 9.5
+s1.add_value(40)
+print(s1.get_average())           # 25.0
+print(Sensor.get_sensor_count())  # 이 둘만 생성했다면 2
+```
+
+생성과 보정 연산이 이미 만들어진 센서 객체를 의도치 않게 변경해서는 안 된다. 두 클래스를 서로 무관한 독립 클래스로 구현하지 마시오. 요구된 **상속 관계·클래스 메서드·부모 클래스 호출**을 확인한다.
+
+</section>
 
 <a id="p2-plan"></a>
 
@@ -678,59 +837,133 @@ ValueError: 측정값은 0 이상이어야 함
 
 ### 3-1. 문제 원문
 
-<details>
-<summary>Problem 3 영문 원문 전체와 예제 그림 펼치기</summary>
+<section class="problem-statement" lang="en">
+
+#### English · 문제 원문
+
+##### Problem 3. Vectorized Numerical Simulation and Visualization (35 points)
+
+Write and test a Python script that uses NumPy to perform array-based numerical computations and Matplotlib to visualize the calculated values. You must implement the numerical operations in a vectorized manner; do not use an explicit Python for-loop to calculate a function value for each individual array element. Use the numpy and matplotlib.pyplot modules.
+
+##### P3.1. Numerical arrays and statistics
+
+Create a one-dimensional NumPy array named x containing 500 equally spaced floating-point values from 0 to 10, including both endpoints. Create two more arrays by evaluating the following functions for every element of x using a single vectorized expression for each array:
 
 ```text
-Problem 3. Vectorized Numerical Simulation and Visualization (35 points)
-Write and test a Python script that uses NumPy to perform array-based numerical computations and Matplotlib to
-visualize the calculated values. You must implement the numerical operations in a vectorized manner; do not use an
-explicit Python for-loop to calculate a function value for each individual array element. Use the numpy and
-matplotlib.pyplot modules.
-P3.1. Numerical arrays and statistics
-Create a one-dimensional NumPy array named x containing 500 equally spaced floating-point values from 0 to 10,
-including both endpoints. Create two more arrays by evaluating the following functions for every element of x
-using a single vectorized expression for each array:
 f(x) = sin(3x) exp(-x/2)      g(x) = cos(2x) exp(-x/2)
-For f(x), display the array shape, the arithmetic mean, the standard deviation (using the default NumPy definition),
-the largest value, and the index of the largest value. Also display the corresponding x coordinate of that maximum.
-Use NumPy array methods/functions instead of manually accumulating individual values.
-P3.2. Two-dimensional arrays, slicing, and copying
-Take the first 12 elements of the f(x) array using slicing and reshape them into a 3 by 4 matrix. Print the matrix and
-its transpose, including their shapes. Create a slice selecting the last two rows and first two columns of the 3 by 4
-matrix. Demonstrate with an assignment that modifying this slice also changes the original matrix. Then repeat the
-demonstration using an independent slice created with .copy() and show that changing the copied array does not
-modify the original matrix. Explain the difference between the two outcomes in a short comment.
-P3.3. Elementary matrix computation
-Use NumPy to construct the coefficient matrix A and vector b shown below. Solve the linear system Ax = b using
-np.linalg.solve() and verify the result using the @ matrix multiplication operator. Do not solve the system by hand
-and copy the solution into your program. The expected solution vector is [2.0, 3.0].
-A = np.array([[3.0, 1.0], [1.0, 2.0]])
-b = np.array([9.0, 8.0])
-P3.4. Random numbers and the Rayleigh distribution
-Generate two independent NumPy arrays of 10,000 real Gaussian random values each, with mean zero and standard
-deviation 1/sqrt(2). Use np.random.randn() or np.random.normal(). Use the first array as the real part and the
-second array as the imaginary part of 10,000 complex numbers. Combine them into a complex-valued array and
-compute its element-wise magnitudes by invoking np.abs(). These magnitudes will follow the Rayleigh distribution.
-Do not use an explicit Python loop in any step of this generation process.
-P3.5. Subplots and histogram
-Create one Matplotlib figure containing two vertically arranged subplots. The upper subplot shall display both f(x)
-and g(x) versus x, using two distinguishable lines and a legend identifying the functions. The lower subplot shall
-display a histogram of the 10,000 Rayleigh-distributed magnitude values using 100 bins. Add a meaningful title,
-x-axis label, y-axis label, and grid to both subplots. The lower histogram must show the number of occurrences in
-each bin (not normalized relative frequencies). Adjust the layout so the subplot titles and axis labels do not overlap.
-Save the figure as simulation.png before calling plt.show().
-Example figure. The individual histogram bar heights will change between program runs because the inputs are
-random. The overall distribution and the damped curves should resemble the plots below.
-In addition to the example graph, test that the length of all 1D input arrays is correct and that the array operations produce no
-shape errors. Do not hard-code the numerical curve values or the histogram frequencies.
 ```
 
-아래는 원문 PDF에 들어 있는 예제 그림을 그대로 추출한 것이다.
+For `f(x)`, display the array shape, the arithmetic mean, the standard deviation (using the default NumPy definition), the largest value, and the index of the largest value. Also display the corresponding x coordinate of that maximum.
 
-![문제 원문에 제시된 감쇠 함수 두 개와 Rayleigh 크기 히스토그램 예시](original-figure.png)
+Use NumPy array methods/functions instead of manually accumulating individual values.
 
-</details>
+##### P3.2. Two-dimensional arrays, slicing, and copying
+
+Take the first 12 elements of the `f(x)` array using slicing and reshape them into a 3 by 4 matrix. Print the matrix and its transpose, including their shapes. Create a slice selecting the last two rows and first two columns of the 3 by 4 matrix. Demonstrate with an assignment that modifying this slice also changes the original matrix. Then repeat the demonstration using an independent slice created with .`copy()` and show that changing the copied array does not modify the original matrix. Explain the difference between the two outcomes in a short comment.
+
+##### P3.3. Elementary matrix computation
+
+Use NumPy to construct the coefficient matrix A and vector b shown below. Solve the linear system Ax = b using `np.linalg.solve()` and verify the result using the @ matrix multiplication operator. Do not solve the system by hand and copy the solution into your program. The expected solution vector is [2.0, 3.0].
+
+```python
+A = np.array([[3.0, 1.0], [1.0, 2.0]])
+b = np.array([9.0, 8.0])
+```
+
+##### P3.4. Random numbers and the Rayleigh distribution
+
+Generate two independent NumPy arrays of 10,000 real Gaussian random values each, with mean zero and standard deviation 1/`sqrt(2)`. Use `np.random.randn()` or `np.random.normal()`. Use the first array as the real part and the second array as the imaginary part of 10,000 complex numbers. Combine them into a complex-valued array and compute its element-wise magnitudes by invoking `np.abs()`. These magnitudes will follow the Rayleigh distribution.
+
+Do not use an explicit Python loop in any step of this generation process.
+
+##### P3.5. Subplots and histogram
+
+Create one Matplotlib figure containing two vertically arranged subplots. The upper subplot shall display both `f(x)` and `g(x)` versus x, using two distinguishable lines and a legend identifying the functions. The lower subplot shall display a histogram of the 10,000 Rayleigh-distributed magnitude values using 100 bins. Add a meaningful title, x-axis label, y-axis label, and grid to both subplots. The lower histogram must show the number of occurrences in each bin (not normalized relative frequencies). Adjust the layout so the subplot titles and axis labels do not overlap.
+
+Save the figure as simulation.png before calling `plt.show()`.
+
+Example figure. The individual histogram bar heights will change between program runs because the inputs are random. The overall distribution and the damped curves should resemble the plots below.
+
+In addition to the example graph, test that the length of all 1D input arrays is correct and that the array operations produce no shape errors. Do not hard-code the numerical curve values or the histogram frequencies.
+
+![문제 3 원문의 감쇠 곡선과 Rayleigh 히스토그램 예제](original-figure.png)
+
+</section>
+
+<section class="problem-statement" lang="ko">
+
+#### 한국어 · 전체 번역
+
+##### 문제 3. 벡터화 수치 시뮬레이션과 시각화 (35점)
+
+NumPy로 배열 기반 수치 계산을 수행하고 Matplotlib으로 계산 결과를 시각화하는 Python 스크립트를 작성하고 테스트하시오.
+
+수치 연산은 **벡터화된 방식**으로 구현해야 한다. 배열의 원소마다 함수 값을 하나씩 계산하는 명시적인 Python `for`문을 사용하지 마시오. `numpy`와 `matplotlib.pyplot` 모듈을 사용하시오.
+
+##### P3.1. 수치 배열과 통계
+
+0부터 10까지 **양 끝점을 모두 포함**하여, 동일한 간격의 부동소수점 값 **500개**를 담은 1차원 NumPy 배열 `x`를 만드시오.
+
+다음 함수를 x의 모든 원소에 계산하여 배열 두 개를 추가로 만드시오. 각 배열에는 **벡터화 표현식 하나**를 사용해야 한다.
+
+$$f(x)=\sin(3x)\exp(-x/2)$$
+
+$$g(x)=\cos(2x)\exp(-x/2)$$
+
+f(x)에 대해 다음을 표시하시오.
+
+- 배열의 shape
+- 산술평균
+- **NumPy 기본 정의**에 따른 표준편차
+- 최댓값
+- 최댓값의 인덱스
+- 그 최댓값에 대응하는 x 좌표
+
+개별 값을 직접 누적하지 말고 NumPy 배열 메서드와 함수를 사용하시오.
+
+##### P3.2. 2차원 배열, 슬라이싱과 복사
+
+슬라이싱으로 f(x) 배열의 **처음 12개 원소**를 가져와 **3행 4열** 행렬로 reshape하시오. 행렬과 전치행렬을 각각 shape와 함께 출력하시오.
+
+3행 4열 행렬의 **마지막 두 행과 처음 두 열**을 선택한 슬라이스를 만드시오. 이 슬라이스에 값을 대입했을 때 원본 행렬도 바뀐다는 것을 보여 주시오.
+
+그다음 `.copy()`로 만든 독립적인 슬라이스를 사용해 같은 실험을 반복하고, 복사된 배열을 변경해도 원본 행렬이 바뀌지 않음을 보여 주시오. 두 결과가 다른 이유를 짧은 주석으로 설명하시오.
+
+##### P3.3. 기본 행렬 계산
+
+NumPy로 아래 계수 행렬 A와 벡터 b를 만드시오. `np.linalg.solve()`로 연립방정식 Ax = b를 풀고, 행렬 곱 연산자 `@`로 결과를 검증하시오.
+
+손으로 해를 구한 뒤 프로그램에 그대로 적어 넣지 마시오. 예상 해 벡터는 `[2.0, 3.0]`이다.
+
+```python
+A = np.array([[3.0, 1.0], [1.0, 2.0]])
+b = np.array([9.0, 8.0])
+```
+
+##### P3.4. 난수와 Rayleigh 분포
+
+각각 **10,000개의 실수 정규 난수**가 들어 있는 독립적인 NumPy 배열 두 개를 생성하시오. 두 배열 모두 평균은 0, 표준편차는 **1/√2**여야 한다. `np.random.randn()` 또는 `np.random.normal()`을 사용하시오.
+
+첫 배열을 실수부, 두 번째 배열을 허수부로 사용하여 복소수 10,000개를 만드시오. 두 배열을 하나의 복소수 배열로 합치고, `np.abs()`를 호출해 원소별 크기를 계산하시오. 이 크기들은 Rayleigh 분포를 따른다.
+
+**이 생성 과정의 어느 단계에서도 명시적인 Python 반복문을 사용하지 마시오.**
+
+##### P3.5. 서브플롯과 히스토그램
+
+세로로 배치한 서브플롯 두 개가 들어 있는 Matplotlib figure 하나를 만드시오.
+
+- 위쪽 서브플롯에는 x에 대한 f(x)와 g(x)를 구분 가능한 두 선으로 그리고, 함수를 식별하는 범례를 넣으시오.
+- 아래쪽 서브플롯에는 Rayleigh 분포를 따르는 크기 10,000개의 히스토그램을 **100개 bin**으로 그리시오.
+- 두 서브플롯 모두 의미 있는 제목, x축 이름, y축 이름, 격자를 넣으시오.
+- 아래 히스토그램은 정규화된 상대도수가 아니라 **각 bin에 들어간 횟수인 도수**를 표시해야 한다.
+- 제목과 축 이름이 겹치지 않도록 레이아웃을 조정하시오.
+- **`plt.show()` 호출 전에** 그림을 `simulation.png`로 저장하시오.
+
+**예제 그림:** 입력이 난수이므로 프로그램 실행마다 개별 막대 높이는 달라진다. 전체적인 분포와 감쇠 곡선의 모양은 위 영문 원문에 제시된 그림과 비슷해야 한다.
+
+예제 그래프 외에도 모든 1차원 입력 배열의 길이가 올바른지, 배열 연산에서 shape 오류가 발생하지 않는지 테스트하시오. **함수의 수치 값이나 히스토그램 도수를 코드에 미리 고정해 넣지 마시오.**
+
+</section>
 
 <a id="p3-plan"></a>
 
