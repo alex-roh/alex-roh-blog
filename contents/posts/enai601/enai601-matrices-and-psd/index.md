@@ -1,7 +1,8 @@
 ---
-title: "[ENAI601] 02 — 행렬에서 PSD까지, 고유값으로 읽는 이차형식"
-description: "9월 9일 선형대수 복습: 행렬 곱을 열의 선형결합으로 읽고 range·null space·rank·역행렬·행렬식·고유값을 거쳐 PSD와 최적화로 연결한다."
+title: "[ENAI601] 02 — 행렬에서 PSD까지, 사라지는 방향과 복원하는 방법"
+description: "직접 쓴 행렬 노트로 복습하는 행·열 관점, rank와 null space, 왼쪽 역행렬·최소제곱·의사역행렬, 고유기저와 PSD. 대칭행렬 조건과 각도 해석까지 연결한다."
 date: 2026-10-21
+update: 2026-10-21
 tags:
   - ENAI601
   - linear-algebra
@@ -10,63 +11,79 @@ series: "ENAI601"
 seriesOrder: 2
 ---
 
-벡터를 공부할 때 내적은 방향의 관계를, 정사영은 부분공간 안에서 가장 가까운 표현을 알려 주었다. 행렬은 이 벡터들을 다른 벡터로 보내는 규칙이다. **그 규칙이 어떤 방향을 살리고, 어떤 방향을 없애며, 방향마다 어떤 배율을 주는가?** 이 질문으로 행렬을 보면 rank와 고유값, positive semidefinite가 연결된다.
+행렬에 벡터를 곱하면 새로운 벡터가 나온다. 계산은 행과 열을 곱해서 더하면 되지만, 그 결과를 이해하려면 다른 질문이 필요하다. <strong>입력의 어떤 방향이 출력에 남고, 어떤 방향이 사라질까? 출력만 보고 입력을 되찾을 수 있을까?</strong>
 
-이 글은 <strong>2026년 9월 9일 수업 캡션과 Module 1 — Linear Algebra 교안</strong>을 바탕으로 작성했다. [앞 글의 벡터·정사영](/enai601-vectors-and-projection/)과 개인 필기에서 먼저 등장했던 행렬 곱·이차형식도 이어 붙였다. 수업 내용을 재구성한 학습 기록이며, 작은 계산 예제와 최소제곱 연결은 이해를 위한 보충 설명이다.
+이번 글은 직접 작성한 <strong>「2 Matrix」 손글씨 노트 8페이지</strong>를 중심으로, <strong>ENAI601 Module 1 — Linear Algebra 교안</strong>, <strong>9월 9일 수업</strong>, <strong>9월 16일 도입부 복습</strong>을 대조해 정리했다. [앞 글의 벡터·정사영](/enai601-vectors-and-projection/)에서 출발해, 행렬을 선형변환으로 읽고 복원·근사·이차형식으로 이어 간다. 이 글에서는 실수 벡터와 실수 행렬을 사용한다.
 
-| 개념 | 확인하려는 것 |
+왼쪽 역행렬과 Moore–Penrose 의사역행렬, PSD의 대칭성에 관한 설명은 필기에 적어 둔 질문을 풀어 쓴 <strong>보충 학습</strong>이다. 교안에서 직접 다룬 범위와 구분해 표시했다.
+
+| 필기의 출발점 | 이 글에서 확인할 것 |
 | --- | --- |
-| 행렬 곱 | 열벡터를 어떤 계수로 조합하는가? |
-| range / null space | 가능한 출력과 사라지는 입력은 무엇인가? |
-| rank / 역행렬 | 독립적인 출력 방향은 몇 개이고 되돌릴 수 있는가? |
-| 행렬식 / 고유값 | 부피와 특정 방향의 배율은 어떻게 변하는가? |
-| 대칭행렬 / PSD | 이차형식이 모든 방향에서 음수가 아닌가? |
+| 1쪽: 행과 열의 관점 | 출력 하나를 계산하는 방법과 가능한 출력 전체의 관계 |
+| 2–3쪽: rank·null space·inverse | pivot, 자유변수, 복원 가능성의 연결 |
+| 4쪽: left inverse·least squares | 정확한 복원과 가장 가까운 근사의 차이 |
+| 5–6쪽: eigenvector·spectral theorem | 고유방향을 검사하는 것으로 모든 방향을 설명하는 이유 |
+| 7–8쪽: PSD·PD·outer product·각도 | 대칭성, 영벡터 예외, 행렬식 판정의 한계 |
 
-## 1. 행렬 곱은 내적이면서 열벡터의 선형결합이다
+## 1. 행 관점과 열 관점은 서로 다른 질문에 답한다
 
-행렬의 크기를 쓸 때 첫 수는 행의 개수, 두 번째 수는 열의 개수다.
-
-$$
-A\in\mathbb R^{m\times n},\qquad x\in\mathbb R^n,\qquad Ax\in\mathbb R^m
-$$
-
-입력 성분은 n개, 출력 성분은 m개다. 행렬 곱의 안쪽 크기가 같아야 하는 이유다. 교안의 예제를 계산해 보자.
+필기의 첫 행렬은 출력 두 개와 입력 세 개를 연결한다.
 
 $$
-A=\begin{bmatrix}3&1&2\\5&4&7\end{bmatrix},\qquad
-x=\begin{bmatrix}4\\3\\1\end{bmatrix}
+A=\begin{bmatrix}2&-1&5\\0&3&4\end{bmatrix},\qquad
+x=\begin{bmatrix}x_1\\x_2\\x_3\end{bmatrix},\qquad
+Ax=\begin{bmatrix}2x_1-x_2+5x_3\\3x_2+4x_3\end{bmatrix}
 $$
 
-행 관점에서는 각 행과 x의 내적이다.
+### 행 관점: 출력 하나를 어떻게 계산하는가?
+
+첫 번째 출력은 첫 번째 행과 입력 전체의 내적이다. 두 번째 출력은 두 번째 행과 입력 전체의 내적이다.
 
 $$
-Ax=\begin{bmatrix}3\cdot4+1\cdot3+2\cdot1\\5\cdot4+4\cdot3+7\cdot1\end{bmatrix}
-=\begin{bmatrix}17\\39\end{bmatrix}
+A=\begin{bmatrix}a_1^T\\a_2^T\end{bmatrix}
+\quad\Longrightarrow\quad
+Ax=\begin{bmatrix}a_1^Tx\\a_2^Tx\end{bmatrix}
 $$
 
-열 관점에서는 A의 열벡터들을 x의 성분으로 가중합한다.
+각 행은 하나의 출력을 만들기 위한 가중치 묶음이다. 예를 들어 입력 x=(1,2,−1)이면 첫 번째 출력은 −5, 두 번째 출력은 2다.
+
+### 열 관점: 입력 하나가 출력 전체에 어떻게 기여하는가?
+
+이번에는 입력 성분별로 항을 모아 보자.
 
 $$
-Ax=4\begin{bmatrix}3\\5\end{bmatrix}
-+3\begin{bmatrix}1\\4\end{bmatrix}
-+1\begin{bmatrix}2\\7\end{bmatrix}
-=\begin{bmatrix}17\\39\end{bmatrix}
+Ax=x_1\begin{bmatrix}2\\0\end{bmatrix}
++x_2\begin{bmatrix}-1\\3\end{bmatrix}
++x_3\begin{bmatrix}5\\4\end{bmatrix}
 $$
 
-수업에서 강조한 것은 이 두 번째 해석이다. <strong>행렬에 벡터를 곱한다는 것은 열벡터들의 선형결합을 만든다는 뜻</strong>이다. 입력 벡터가 그 조합의 계수를 정한다.
+각 열벡터는 해당 입력 성분이 출력 공간에 더하는 방향이다. x₁, x₂, x₃는 그 방향들의 계수다. 일반적으로는
 
-행렬끼리의 곱도 같다. C의 각 열을 하나씩 입력으로 넣으면 AC의 각 열이 된다.
+$$
+A=[a_1\ a_2\ \cdots\ a_n]
+\quad\Longrightarrow\quad Ax=\sum_{j=1}^{n}x_ja_j
+$$
+
+이다. 수업에서 강조한 “행렬 곱은 열의 선형결합”이라는 설명이 여기서 나온다. 행 관점은 <strong>출력 성분 하나의 계산</strong>, 열 관점은 <strong>가능한 출력들의 공간</strong>을 이해할 때 유용하다.
+
+### Shape를 먼저 확인한다
+
+$$
+A\in\mathbb R^{m\times n},\quad x\in\mathbb R^n,
+\quad Ax\in\mathbb R^m,\qquad A:\mathbb R^n\to\mathbb R^m
+$$
+
+입력 차원은 열의 개수 n이고 출력 차원은 행의 개수 m이다. 벡터의 shape를 열로 쓰면 n×1에서 m×1로 바뀐다.
+
+행렬 C에 대해서도 각 열을 하나씩 입력하면 된다.
 
 $$
 A\in\mathbb R^{m\times n},\quad C\in\mathbb R^{n\times p}
-\quad\Longrightarrow\quad AC\in\mathbb R^{m\times p}
+\quad\Longrightarrow\quad AC\in\mathbb R^{m\times p},
+\qquad (AC)_{ij}=\sum_{k=1}^n a_{ik}c_{kj}
 $$
 
-$$
-(AC)_{ij}=\sum_{k=1}^n a_{ik}c_{kj}
-$$
-
-곱의 순서도 의미가 있다. AC는 먼저 C, 다음 A를 적용하는 합성이다. 일반적으로 AC와 CA는 다르며, 한쪽만 정의될 수도 있다.
+AC는 먼저 C, 다음 A를 적용하는 합성이다. 일반적으로 AC와 CA는 다르며, 한쪽만 정의될 수도 있다. 행렬 덧셈은 두 행렬의 shape가 같을 때 같은 위치의 원소끼리 더한다.
 
 ## 2. 선형변환: 덧셈과 스칼라배를 보존한다
 
@@ -90,96 +107,111 @@ $$
 
 이 변환은 일반적으로 원점을 보존하지 않는다. 나중에 제약식을 볼 때 선형 부분공간과 원점에서 이동한 집합을 구별하는 데 도움이 된다.
 
-## 3. Range: 만들 수 있는 모든 출력
+## 3. Range는 가능한 출력 전체다
 
-입력 계수를 자유롭게 바꿀 때 나오는 모든 출력의 집합이 **range**, 또는 column space다.
+입력을 자유롭게 바꿀 때 만들 수 있는 출력의 집합이 <strong>range</strong>, 또는 column space다.
 
 $$
 \mathcal R(A)=\{Ax:x\in\mathbb R^n\}
-=\operatorname{span}\{A_{\cdot1},\ldots,A_{\cdot n}\}\subseteq\mathbb R^m
+=\operatorname{span}\{a_1,\ldots,a_n\}\subseteq\mathbb R^m
 $$
 
-앞 절에서 열의 선형결합이라는 해석을 잡았으면 정의가 자연스럽다. 예를 들어
+필기의 예제처럼 두 열이 종속인 행렬을 생각하자.
 
 $$
-B=\begin{bmatrix}1&2&3\\2&4&6\end{bmatrix}
+B=\begin{bmatrix}1&2\\2&4\end{bmatrix},\qquad
+Bx=(x_1+2x_2)\begin{bmatrix}1\\2\end{bmatrix}
 $$
 
-라면 두 번째 열은 첫 번째 열의 2배, 세 번째 열은 3배다. 따라서
-
-$$
-Bx=(x_1+2x_2+3x_3)\begin{bmatrix}1\\2\end{bmatrix}
-$$
-
-이고, 가능한 출력은 평면 전체가 아닌 하나의 직선이다.
+두 번째 열은 첫 번째 열의 2배다. 어떤 입력을 넣어도 출력은 (1,2) 방향의 직선에 놓인다.
 
 $$
 \mathcal R(B)=\operatorname{span}\left\{\begin{bmatrix}1\\2\end{bmatrix}\right\}
 $$
 
-출력 벡터의 <strong>성분 개수는 2</strong>지만 range의 <strong>차원은 1</strong>이다. 열이 세 개 있다고 독립적인 출력 방향도 세 개인 것은 아니다.
+출력 성분은 두 개지만 독립적인 출력 방향은 하나다. 예를 들어 b=(1,0)은 이 직선 밖에 있으므로 Bx=b를 만족하는 입력이 없다.
 
-## 4. Null space: 곱하면 사라지는 입력
+range가 부분공간인 이유도 선형성으로 확인할 수 있다. 가능한 두 출력 Ax, Ay를 선형결합하면 다시 A(αx+βy)라는 가능한 출력이 된다. 영벡터 A0도 포함한다.
 
-**Null space**, 또는 kernel은 출력이 영벡터가 되는 입력의 집합이다.
+## 4. Null space는 사라지는 입력 전체다
+
+<strong>Null space</strong>, 또는 kernel은 출력이 영벡터가 되는 입력들의 집합이다.
 
 $$
 \mathcal N(A)=\{x\in\mathbb R^n:Ax=0\}\subseteq\mathbb R^n
 $$
 
-range는 출력 공간 안에, null space는 입력 공간 안에 있다. B의 경우는
+range는 <strong>출력 공간</strong>, null space는 <strong>입력 공간</strong>에 놓인다. Ax=Ay일 때 A(x−y)=0이므로, null space는 같은 출력을 만드는 입력들의 차이도 설명한다.
+
+위의 B에서는 다음이 성립한다.
 
 $$
-x_1+2x_2+3x_3=0
+z=\begin{bmatrix}-2\\1\end{bmatrix},\qquad Bz=0,
+\qquad B(x+tz)=Bx\quad(t\in\mathbb R)
 $$
 
-을 풀면 된다. 자유변수를 s, t로 두면
+원래 입력에 z 방향을 얼마나 더해도 출력이 바뀌지 않는다. 출력만으로 그 방향의 입력 정보를 복원할 수 없다.
+
+### 필기의 2×3 예제: 자유변수로 모든 해를 표현하기
 
 $$
-x=\begin{bmatrix}-2s-3t\\s\\t\end{bmatrix}
-=s\begin{bmatrix}-2\\1\\0\end{bmatrix}
-+t\begin{bmatrix}-3\\0\\1\end{bmatrix}
+C=\begin{bmatrix}1&0&1\\0&1&1\end{bmatrix},\qquad Cx=0
 $$
 
-이다. 두 방향은 서로 독립이므로 null space는 3차원 입력 공간 안의 2차원 부분공간이다.
-
-null space가 왜 해의 유일성과 연결될까? 어떤 입력 h가 null space에 있으면 원래 입력에 h를 더해도 출력이 바뀌지 않는다.
+연립방정식으로 쓰면 x₁+x₃=0, x₂+x₃=0이다. 세 번째 성분을 t로 놓으면
 
 $$
-Ah=0\quad\Longrightarrow\quad A(x+h)=Ax
+x=\begin{bmatrix}-t\\-t\\t\end{bmatrix}
+=t\begin{bmatrix}-1\\-1\\1\end{bmatrix},\qquad
+\mathcal N(C)=\operatorname{span}\left\{\begin{bmatrix}-1\\-1\\1\end{bmatrix}\right\}
 $$
 
-출력만 보고 x와 x+h를 구별할 수 없다. **영벡터 이외의 null space가 있으면 서로 다른 입력이 같은 출력으로 간다.**
+이다. 자유변수가 하나이므로 null space의 차원은 1이다. 여기서 null space는 “입력 벡터 하나”가 아닌 <strong>그런 입력들의 집합</strong>이다. 또한 선형결합해도 여전히 0으로 가므로 부분공간이다.
 
-## 5. Rank와 rank–nullity: 독립적인 출력과 사라지는 방향
+## 5. Rank는 pivot의 개수이자 독립적인 출력 방향의 수다
 
 rank는 range의 차원이다.
 
 $$
-\operatorname{rank}(A)=\dim\mathcal R(A)
+\operatorname{rank}(A)=\dim\mathcal R(A)\le\min(m,n)
 $$
 
-교안의 rank–nullity theorem은 입력 공간의 차원을 다음과 같이 연결한다.
+열벡터가 n개이므로 독립적인 방향은 n개를 넘을 수 없고, 그 열들이 사는 출력 공간이 m차원이므로 m개도 넘을 수 없다. 영행렬의 rank는 0이며, 가능한 최대값 min(m,n)을 가지면 <strong>full rank</strong>다.
+
+필기에서는 행 소거 후 pivot을 세는 계산으로 연결했다.
+
+$$
+D=\begin{bmatrix}1&2&1\\1&2&2\end{bmatrix}
+\xrightarrow{R_2\leftarrow R_2-R_1}
+R=\begin{bmatrix}1&2&1\\0&0&1\end{bmatrix}
+$$
+
+첫 번째 열과 세 번째 열에 pivot이 있으므로 rank는 2다. 두 번째 열은 첫 번째 열의 2배다. range의 기저를 원래 행렬에서 고르면
+
+$$
+\left\{\begin{bmatrix}1\\1\end{bmatrix},
+\begin{bmatrix}1\\2\end{bmatrix}\right\}
+$$
+
+가 된다. <strong>행 소거는 pivot 열의 위치를 알려 주지만, 원래 column space의 기저는 원래 행렬의 그 열에서 가져온다.</strong>
+
+행 연산을 가역행렬 E의 곱으로 쓰면 R=ED다. 따라서 rank와 열들 사이의 선형관계는 보존되지만, column space 자체는 E에 의해 바뀔 수 있다. 예를 들어 B의 두 번째 행에서 첫 번째 행의 2배를 빼면 range가 (1,2) 방향에서 (1,0) 방향으로 바뀐다. 두 경우 모두 차원은 1이다. 한편 EDx=0과 Dx=0은 동치이므로 null space는 그대로다.
+
+### Rank–nullity는 입력 변수의 개수를 센다
 
 $$
 n=\operatorname{rank}(A)+\dim\mathcal N(A)
 $$
 
-B는 열이 세 개이고 rank가 1, nullity가 2이므로 3=1+2다. 이 식은 rank와 nullity라는 <strong>차원의 관계</strong>다. range와 null space가 같은 공간 안에 놓인다는 뜻은 아니다.
+피벗 변수의 수와 자유변수의 수를 더하면 전체 입력 변수의 수 n이다. C는 rank 2와 nullity 1로 3=2+1을 만족한다. 행의 수 m을 왼쪽에 넣으면 안 된다.
 
-<strong>Full rank</strong>는 가능한 최대 rank를 갖는다는 뜻이다.
+row rank와 column rank도 같다. 다만 <strong>행들이 사는 공간과 열들이 사는 공간이 같다</strong>는 뜻은 아니다. 행공간은 Rⁿ, 열공간은 Rᵐ의 부분공간이다.
 
-$$
-\operatorname{rank}(A)=\min(m,n)
-$$
-
-| 조건 | 결과 |
+| 조건 | Ax=b에서의 의미 |
 | --- | --- |
-| full column rank: rank = n | null space가 {0}, 가능한 출력에 대한 입력은 유일 |
-| full row rank: rank = m | range가 전체 출력 공간, 모든 b에 대해 Ax=b를 풀 수 있음 |
-| 정방행렬이고 rank = n | 모든 b에 대해 유일한 해, 역행렬 존재 |
-
-직사각형 행렬이 full rank여도 양쪽 곱으로 항등행렬을 만드는 보통의 역행렬이 존재하는 것은 아니다. 행과 열의 개수를 먼저 확인한다.
+| full column rank: rank = n | null space가 {0}. 해가 존재하면 유일 |
+| full row rank: rank = m | range가 Rᵐ 전체. 모든 b에 대해 해가 존재 |
+| 정방행렬이고 rank = n | 모든 b에 대해 유일한 해. 역행렬 존재 |
 
 ## 6. 역행렬과 행렬식: 되돌릴 수 있는 변환인가?
 
@@ -221,7 +253,143 @@ $$
 
 행렬식이 0이면 차원이 눌려 넓이·부피가 0이 된다. 그러면 서로 다른 입력들이 겹쳐져 원래 입력을 유일하게 복원할 수 없다.
 
-## 7. 고유벡터와 고유값: 특정 방향의 배율
+### 직사각형 행렬은 왜 따로 생각해야 할까?
+
+필기에서 이어지는 질문은 “정방행렬이 아니어도 입력을 복구할 수 있을까?”다. 여기부터 왼쪽 역행렬·최소제곱 부분은 보충 학습이다.
+
+행이 더 많은 <strong>tall matrix</strong>라도 full column rank이면 서로 다른 입력이 같은 출력으로 겹치지 않는다. 입력을 더 큰 출력 공간 안에 일대일로 넣는 것이다. 다만 출력 공간의 모든 벡터를 만들지는 못한다.
+
+반대로 열이 더 많은 <strong>wide matrix</strong>는 rank≤m<n이므로 nullity가 양수다. 입력 전체를 일대일로 복구할 수 없다. full row rank이면 모든 출력을 만들 수 있고 오른쪽 역행렬은 가질 수 있다.
+
+## 7. 왼쪽 역행렬은 원래 만들어 낸 출력을 정확히 복원한다
+
+full column rank인 A에 대해, A의 왼쪽에 곱해서 항등행렬을 만드는 L을 생각하자.
+
+$$
+A\in\mathbb R^{m\times n},\quad L\in\mathbb R^{n\times m},
+\qquad LA=I_n
+$$
+
+그러면 실제로 A가 만든 출력 y=Ax에서는 Ly=x다. 이것이 <strong>left inverse(왼쪽 역행렬)</strong>의 복원 의미다.
+
+하지만 임의의 b에 대해 ALb=b라고 결론 내릴 수는 없다. tall matrix에서 AL은 m×m이고 rank가 최대 n이므로, m>n이면 Iₘ이 될 수 없다.
+
+필기의 간단한 예제를 쓰면
+
+$$
+E=\begin{bmatrix}1&0\\0&1\\0&0\end{bmatrix},\qquad
+Ex=\begin{bmatrix}x_1\\x_2\\0\end{bmatrix}
+$$
+
+이다. 입력은 두 성분인데 출력은 세 성분이다. 출력은 xy평면 안에만 놓이고, 그 평면 안에서는 입력을 잃지 않는다.
+
+### 왼쪽 역행렬은 하나가 아닐 수 있다
+
+임의의 c,d에 대해 다음 행렬은 모두 E의 왼쪽 역행렬이다.
+
+$$
+L_{c,d}=\begin{bmatrix}1&0&c\\0&1&d\end{bmatrix},
+\qquad L_{c,d}E=I_2
+$$
+
+원래 E가 만드는 출력은 세 번째 성분이 0이므로 c,d가 무엇이든 복원값이 같다. 그러나 b=(3,5,100)처럼 range 밖의 벡터에 적용하면 결과가 달라진다.
+
+$$
+L_{c,d}b=\begin{bmatrix}3+100c\\5+100d\end{bmatrix}
+$$
+
+따라서 <strong>왼쪽 역행렬이라는 조건만으로 임의의 관측값에 대한 최소제곱해가 정해지지는 않는다.</strong> 그 역할을 하는 특별한 선택이 의사역행렬이다.
+
+## 8. 최소제곱과 의사역행렬: 만들 수 없는 출력에 가장 가깝게 가기
+
+현실의 관측값 b는 A의 range 밖에 있을 수 있다. 그때는 Ax=b의 정확한 해를 찾는 대신
+
+$$
+\min_x\|Ax-b\|_2^2
+$$
+
+를 푼다. 가능한 출력 중 b에 가장 가까운 점을 고르는 문제다. [벡터 글의 정사영](/enai601-vectors-and-projection/)이 여기서 다시 등장한다.
+
+$$
+\hat b=A\hat x=\operatorname{proj}_{\mathcal R(A)}b,\qquad
+r=b-A\hat x,\qquad r\perp\mathcal R(A)
+$$
+
+잔차가 A의 각 열과 직교해야 하므로
+
+$$
+A^T(b-A\hat x)=0\quad\Longleftrightarrow\quad
+A^TA\hat x=A^Tb
+$$
+
+를 얻는다. 이것이 <strong>normal equations(정규방정식)</strong>다. 잔차를 b−A x̂로 정의했으므로 부호도 이 식과 일치한다.
+
+### Full column rank일 때의 공식
+
+$$
+x^TA^TAx=\|Ax\|_2^2
+$$
+
+A가 full column rank이면 0이 아닌 x에서 이 값이 양수다. 따라서 AᵀA는 PD이자 가역이다. 이때
+
+$$
+A^+=(A^TA)^{-1}A^T,\qquad \hat x=A^+b,\qquad A^+A=I_n
+$$
+
+이다. A⁺는 Moore–Penrose pseudoinverse이며, 이 경우에는 왼쪽 역행렬이기도 하다. 하지만 앞의 모든 L이 A⁺인 것은 아니다.
+
+### 필기의 b=(3,5,100) 예제
+
+![E는 두 입력 좌표를 xy평면으로 보내고 E+는 관측값의 첫 두 좌표를 추출한다. E+E는 항등행렬이고 EE+는 xy평면으로의 정사영이다.](inverse-and-projection.svg)
+
+E의 두 열은 이미 정규직교하므로 EᵀE=I₂다.
+
+$$
+E^+=E^T=\begin{bmatrix}1&0&0\\0&1&0\end{bmatrix}
+$$
+
+$$
+\hat x=E^+b=\begin{bmatrix}3\\5\end{bmatrix},\qquad
+\hat b=E\hat x=\begin{bmatrix}3\\5\\0\end{bmatrix},\qquad
+r=\begin{bmatrix}0\\0\\100\end{bmatrix}
+$$
+
+b 자체를 복원한 것이 아니라, <strong>xy평면에서 b에 가장 가까운 출력의 두 좌표</strong>를 얻었다. 세 번째 성분 100은 E의 어떤 입력으로도 만들 수 없는 잔차다.
+
+$$
+EE^+=\begin{bmatrix}1&0&0\\0&1&0\\0&0&0\end{bmatrix}\ne I_3
+$$
+
+E⁺E는 입력을 복원하는 I₂지만, EE⁺는 출력 공간에서 xy평면으로 정사영하는 행렬이다.
+
+### Rank가 부족해도 의사역행렬은 존재한다
+
+일반 실수 행렬의 Moore–Penrose 의사역행렬은 유일하다. 다음 네 조건을 만족한다.
+
+$$
+AA^+A=A,\qquad A^+AA^+=A^+,
+\qquad (AA^+)^T=AA^+,\qquad(A^+A)^T=A^+A
+$$
+
+rank가 부족하면 (AᵀA)⁻¹Aᵀ 공식은 사용할 수 없다. 대신 SVD로 정의할 수 있다. A=UΣVᵀ이면
+
+$$
+A^+=V\Sigma^+U^T
+$$
+
+이며, Σ⁺는 0이 아닌 특이값만 역수로 바꾸고 전치한 크기에 배치한다. 0인 특이값은 0으로 남긴다.
+
+<strong>A⁺b는 최소제곱해들 중 유클리드 노름이 가장 작은 해</strong>다. rank가 부족하면 계수는 여러 개일 수 있어도 정사영된 출력 AA⁺b는 유일하다. 일반적으로 A⁺A는 입력 공간의 row space로의 정사영이며, 원래 입력 전체를 되돌리는 항등행렬은 아니다.
+
+| 연산 | 의미 |
+| --- | --- |
+| A⁺b | b에 대한 최소 노름 최소제곱 계수 |
+| AA⁺b | b를 column space에 정사영한 출력 |
+| A⁺Ax | x를 row space에 정사영한 입력 성분 |
+
+NumPy의 [`lstsq`](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html)는 최소제곱해를, [`pinv`](https://numpy.org/doc/stable/reference/generated/numpy.linalg.pinv.html)는 SVD를 이용한 의사역행렬을 계산한다. 실제 수치 계산에서는 정규방정식의 역행렬을 직접 만들기보다 이러한 수치 선형대수 루틴을 사용한다. 아주 작은 특이값을 0으로 취급할지에 따라 수치적 rank와 결과가 달라질 수 있으므로 임계값도 의미가 있다.
+
+## 9. 고유벡터와 고유값: 특정 방향의 배율
 
 정방행렬 A의 <strong>고유벡터</strong>는 다음을 만족하는 0이 아닌 벡터다.
 
@@ -233,7 +401,13 @@ $$
 
 영벡터는 어떤 행렬에서도 위 식을 만족하므로 고유벡터에서 제외한다. 또 일반 실수 행렬의 고유값·고유벡터는 복소수가 될 수도 있다. 이때는 실수 평면의 화살표 그림만으로 해석하기 어렵다.
 
-고유값을 찾는 식은 특성방정식이다.
+### 왜 특성방정식이 null space 문제일까?
+
+$$
+Av=\lambda v\quad\Longleftrightarrow\quad(A-\lambda I)v=0
+$$
+
+고유벡터는 0이 아니므로 A−λI의 null space에 영벡터 이외의 벡터가 있어야 한다. 즉 A−λI가 특이행렬이어야 한다. 따라서 고유값을 찾는 식은 특성방정식이다.
 
 $$
 \det(\lambda I-A)=0
@@ -266,7 +440,11 @@ $$
 \lambda_1\lambda_2=2=\det(S)
 $$
 
-## 8. 대칭행렬: 직교하는 고유방향으로 좌표를 바꾸기
+λ를 찾은 뒤에는 (A−λI)v=0을 풀어 고유벡터를 구한다. 고유벡터의 0이 아닌 스칼라배도 같은 고유값의 고유벡터다. 특정 길이 하나로 유일하게 정해지는 것이 아니라, 그 방향을 나타낸다.
+
+특성다항식은 det(λI−A) 또는 det(A−λI)로 쓸 수 있다. 둘은 (−1)ⁿ 배 차이이므로 근은 같다. 다만 최고차항과 상수항의 부호를 계산할 때는 어느 쪽을 썼는지 일관되게 유지한다.
+
+## 10. 대칭행렬: 직교하는 고유방향으로 좌표를 바꾸기
 
 실수 대칭행렬은 전치해도 같다.
 
@@ -296,9 +474,23 @@ $$
 
 중복 고유값에 속하는 벡터들이 <strong>처음부터 모두 직교한다</strong>는 뜻은 아니다. 그 고유공간 안에서 직교기저를 선택할 수 있다는 뜻이다.
 
-## 9. 이차형식: 고유방향별 제곱 크기에 가중치를 주기
+### “고유벡터끼리는 직교한다”의 정확한 조건
 
-개인 필기에서 벡터의 제곱 노름 바로 옆에 등장했던 식이다.
+실수 대칭행렬 S에 대해 Sv=λv, Sw=μw라 하자. 그러면
+
+$$
+\lambda v^Tw=(Sv)^Tw=v^TSw=\mu v^Tw
+$$
+
+이므로 (λ−μ)vᵀw=0이다. λ≠μ이면 vᵀw=0을 얻는다. 대칭성으로 Sᵀ=S를 쓸 수 있었던 것이 핵심이다.
+
+같은 고유값의 고유벡터들은 임의로 골랐을 때 직교할 필요가 없다. 예를 들어 I₂에서는 모든 0이 아닌 벡터가 고유값 1의 고유벡터다. 그중 (1,0), (1,1)은 직교하지 않는다. spectral theorem은 이런 고유공간 안에서도 <strong>정규직교기저를 선택할 수 있다</strong>는 정리다.
+
+일반 행렬의 대각화는 고유벡터를 충분히 확보했을 때 A=PΛP⁻¹로 쓴다. 실수 대칭행렬에서는 P를 정규직교행렬 Q로 고를 수 있어 Q⁻¹=Qᵀ라는 추가 이점이 생긴다.
+
+## 11. 이차형식: 고유방향별 제곱 크기에 가중치를 주기
+
+필기 5–6페이지에서 PSD를 이해하기 위해 전개한 식이다.
 
 $$
 f(x)=x^TSx
@@ -328,7 +520,9 @@ $$
 
 교차항은 있지만 완전제곱으로 정리하면 0이 아닌 x에서 항상 양수임을 알 수 있다. 원래 좌표에서 교차항이 있다는 사실만으로 이차형식의 부호를 판단하면 안 된다.
 
-## 10. PSD와 PD: 모든 방향에서의 부호 조건
+고유벡터 하나에만 x를 대입하면 그 방향의 부호를 검사한다. 그러나 PSD 정의는 <strong>모든 x</strong>에 관한 것이다. spectral theorem 덕분에 모든 x를 이 고유기저의 선형결합으로 표현할 수 있고, 교차항이 사라진 가중 제곱합으로 계산할 수 있다. 그래서 모든 고유값이 0 이상이라는 조건이 모든 x에서의 부호 조건으로 확장된다.
+
+## 12. PSD와 PD: 모든 방향에서의 부호 조건
 
 이 수업에서는 실수 대칭행렬에 대해 PSD와 PD를 정의한다.
 
@@ -342,7 +536,7 @@ S\succ0\quad\Longleftrightarrow\quad
 x^TSx>0\quad\text{for every }x\ne0
 $$
 
-첫 번째가 **positive semidefinite(양의 준정부호)**, 두 번째가 <strong>positive definite(양의 정부호)</strong>다. PD에서도 x=0을 넣으면 결과는 0이므로 정의에서 제외한다.
+첫 번째가 <strong>positive semidefinite(양의 준정부호)</strong>, 두 번째가 <strong>positive definite(양의 정부호)</strong>다. PD에서도 x=0을 넣으면 결과는 0이므로 정의에서 제외한다.
 
 고유방향의 제곱합 표현으로부터 판정 조건을 얻는다.
 
@@ -366,7 +560,9 @@ $$
 
 또한 행렬식이 양수라는 조건만으로도 부족하다. 예를 들어 −I₂는 행렬식이 1이지만 모든 0이 아닌 방향에서 이차형식이 음수다.
 
-## 11. 왜 BᵀB와 outer product는 PSD일까?
+PD이면 고유값이 모두 양수이므로 행렬식도 양수이고 역행렬이 존재한다. 반대로 <strong>PSD이면서 가역이면 PD</strong>다. PSD의 고유값들은 0 이상이고, 가역성은 그중 0이 없다는 뜻이기 때문이다. 가역이라는 조건만으로 PD가 되는 것은 아니다.
+
+## 13. 왜 BᵀB와 outer product는 PSD일까?
 
 교안의 마지막 연결은 행렬을 특정 형태로 만들면 PSD임을 바로 보일 수 있다는 것이다. 임의의 실수 행렬 B에 대해
 
@@ -387,51 +583,192 @@ $$
 
 a가 0이 아니면 aaᵀ의 rank는 1이다. n이 2 이상이면 a에 수직인 0이 아닌 방향이 존재하므로 그 방향에서 이차형식은 0이다. 따라서 보통 PSD이며, n≥2에서는 PD가 될 수 없다.
 
-## 12. 정사영에서 최소제곱으로 이어 보기
-
-여기부터는 앞 글과 이번 행렬 복습을 연결하는 보충 설명이다. Ac=b를 정확히 만족할 수 없으면 잔차의 제곱 노름을 최소화한다.
+필기의 u=(1,2)를 실제로 곱하면
 
 $$
-\min_c\|Ac-b\|_2^2
+uu^T=\begin{bmatrix}1&2\\2&4\end{bmatrix}=B,
+\qquad x^TBx=(x_1+2x_2)^2
 $$
 
-Ac는 A의 열벡터들이 만드는 공간 안에 있다. 따라서 이 문제는 b를 <strong>A의 range에 정사영</strong>하는 문제다. 최적 출력 p=Ac에서 잔차는 그 공간에 직교한다.
+이다. 처음 range와 null space를 설명할 때 사용한 B가 다시 나온다. 가능한 출력은 u 방향 하나뿐이고, u에 수직인 (−2,1) 방향은 사라진다. 그 방향에서 이차형식도 0이므로 PSD지만 PD는 아니다. 이 행렬의 고유값은 5와 0이다.
+
+## 14. 왜 PSD를 대칭행렬에 대해 정의할까?
+
+필기 마지막 페이지에 남겨 둔 질문이다. 여기서는 수업의 정의에서 출발해 보충해서 생각해 본다.
+
+임의의 실수 정방행렬 M은 대칭 부분 S와 반대칭 부분 K로 나눌 수 있다.
 
 $$
-A^T(b-Ac)=0\quad\Longrightarrow\quad A^TAc=A^Tb
+M=S+K,\qquad S=\frac{M+M^T}{2},\qquad K=\frac{M-M^T}{2},
+\qquad S^T=S,\quad K^T=-K
 $$
 
-이것이 normal equations다. full column rank일 때 AᵀA가 PD이자 가역이므로 계수가 유일하게 정해진다.
+xᵀKx는 스칼라이므로 전치해도 같아야 한다. 그런데 Kᵀ=−K를 쓰면 부호가 반대가 된다.
 
 $$
-c^*=(A^TA)^{-1}A^Tb
+x^TKx=(x^TKx)^T=x^TK^Tx=-x^TKx
+\quad\Longrightarrow\quad x^TKx=0
 $$
 
-그런데 rank가 부족해도 <strong>정사영된 출력 p는 유일</strong>하다. 같은 출력을 만드는 계수 c가 여러 개일 수 있을 뿐이다. 정사영의 유일성과 계수의 유일성은 구분해야 한다.
+따라서
 
-수치 계산에서는 위 역행렬 식을 그대로 구현하기보다 QR이나 SVD를 사용하는 방법을 배울 수 있다. 여기서는 공식의 기하학적 의미와 가역 조건에 집중한다.
+$$
+\boxed{x^TMx=x^T\left(\frac{M+M^T}{2}\right)x=x^TSx}
+$$
 
-PSD와 최적화의 연결도 보인다. 실수 대칭 S에 대한 이차함수의 Hessian은 2S다.
+이다. <strong>이차형식은 반대칭 부분을 보지 못한다.</strong> 이차형식의 부호를 설명하는 대표 행렬을 대칭 부분으로 잡으면 실수 고유값·정규직교 고유기저·곡률을 일관되게 연결할 수 있다. 이것이 이번 수업의 PSD 정의에서 대칭성을 명시하는 이유다.
+
+### 비대칭행렬의 고유값만 검사하면 안 되는 이유
+
+$$
+M=\begin{bmatrix}1&4\\0&1\end{bmatrix}
+$$
+
+은 두 고유값이 모두 1이다. 하지만 x=(1,−1)을 넣으면
+
+$$
+x^TMx=1-4+1=-2
+$$
+
+가 된다. “고유값이 모두 양수이므로 PD”라는 판정은 여기서 적용할 수 없다. 앞에서 사용한 판정의 조건은 <strong>실수 대칭행렬</strong>이었다.
+
+반대로 대칭이 아니어도 이차형식이 항상 양수인 경우는 있다.
+
+$$
+N=\begin{bmatrix}1&-1\\1&1\end{bmatrix},\qquad
+x^TNx=x_1^2+x_2^2
+$$
+
+이 경우 대칭 부분이 I₂다. 이번 글에서는 교안의 관례에 따라 N 자체를 PSD/PD 행렬로 분류하지 않고, <strong>N의 이차형식은 I₂의 이차형식과 같다</strong>고 표현한다. 부호 부등식 자체와 대칭행렬을 대상으로 한 용어의 정의를 구분한다.
+
+## 15. x와 Ax의 각도로 PSD를 읽을 때의 주의점
+
+9월 9일 수업은 이차형식을 x와 Ax 사이의 내적으로 해석했다. 필기 7–8페이지도 이 설명을 따라간다.
+
+$$
+x^TAx=\langle x,Ax\rangle
+=\|x\|_2\|Ax\|_2\cos\theta
+$$
+
+x와 Ax가 모두 0이 아닌 경우, 내적이 음수가 아니면 둘 사이의 각도는 90도를 넘지 않는다. 즉 출력이 입력의 정반대쪽으로 크게 꺾이는 방향이 없다는 직관이다. 행렬이 모든 벡터를 같은 각도로 회전시킨다는 뜻은 아니다.
+
+단, <strong>Ax=0이면 각도는 정의되지 않는다.</strong> PSD 행렬은 null space를 가질 수 있으므로 이 예외를 반드시 포함해야 한다. 예를 들어 diag(2,0)에 x=(0,1)을 넣으면 Ax=0이다. 내적은 0이지만 이를 “각도가 90도”라고 읽으면 안 된다.
+
+실수 대칭 PSD에서는 더 강한 사실도 성립한다.
+
+$$
+x^TAx=\sum_i\lambda_i c_i^2=0
+\quad\Longleftrightarrow\quad Ax=0
+$$
+
+모든 항이 0 이상이므로 합이 0이려면 양의 고유값에 해당하는 계수가 모두 0이어야 한다. 따라서 <strong>Ax가 0이 아닌 PSD의 경우에는 실제로 각도가 90도보다 작다.</strong> 수업의 “90도를 넘지 않는다”는 설명은 맞는 필요조건이며, 영벡터 예외를 보완하면 더 정확해진다.
+
+또 이 각도 조건만으로 대칭성을 유도할 수는 없다. 앞 절의 N은 비대칭이지만 0이 아닌 모든 x에서 xᵀNx>0이다. 각도는 이차형식의 부호를 설명하는 직관이고, PSD의 전체 정의를 대체하지 않는다.
+
+## 16. 최적화로 이어지는 이차함수
+
+대칭행렬 S를 사용한 이차함수에서는
 
 $$
 f(x)=x^TSx,\qquad \nabla f(x)=2Sx,\qquad \nabla^2f(x)=2S
 $$
 
-이 이차함수는 S가 PSD이면 convex이고, PD이면 strictly convex다. 선형대수 복습의 끝에서 PSD를 다루는 이유가 이후 목적함수의 곡률을 이해하는 데 있다는 것을 알 수 있다. 일반 함수의 convexity 조건과 알고리즘 수렴은 이후 단원에서 별도로 다룰 주제다.
+이다. S가 PSD이면 convex, PD이면 strictly convex다. 이 이차함수에서 PSD는 아래로 휘는 고유방향이 없다는 뜻이고, PD는 모든 0이 아닌 방향에서 양의 곡률을 갖는다는 뜻이다.
 
-## 13. 다시 풀어 볼 세 가지 질문
+최소제곱 목적함수도 같은 구조다.
 
-1. 2×3 행렬이 full row rank이면 역행렬이 있는가? 입력은 유일한가?
-2. 대칭행렬의 고유값이 0, 2, 5이면 PSD인가, PD인가?
-3. A가 full column rank가 아니어도 b의 range(A)로의 정사영은 유일한가?
+$$
+g(x)=\|Ax-b\|_2^2
+=x^TA^TAx-2b^TAx+b^Tb,\qquad
+\nabla^2g(x)=2A^TA\succeq0
+$$
 
-**해설:** 1. 정방행렬이 아니므로 보통의 역행렬은 없다. rank–nullity로 nullity=1이므로 모든 출력에 대한 입력은 여러 개다. 2. PSD이며 PD는 아니다. 고유값 0에 해당하는 방향에서 이차형식이 0이 된다. 3. 유일하다. 여러 계수 벡터가 같은 정사영 벡터를 만들 수 있다.
+A가 full column rank이면 AᵀA가 PD여서 최소제곱 계수는 유일하다. rank가 부족하면 null space 방향으로 움직여도 Ax가 같아서 목적함수 값이 변하지 않는다. <strong>rank, 복원 가능성, 최소제곱해의 유일성, PSD/PD가 같은 구조를 다른 관점에서 설명하고 있다.</strong>
 
-## 참고한 수업 자료와 정리 범위
+## 17. 계산으로 확인하기
 
-- ENAI601, **Module 1 — Linear Algebra**: Matrices, Matrix Multiplication, Range and Nullspace, Inverse, Determinant, Eigenvalues & Eigenvectors, Symmetric Matrices, PSD/PD와 outer product.
-- **2026-09-09 수업 자동 캡션**: 행렬 곱의 열 조합 해석, range와 null space, 행렬식의 넓이 해석, 고유값과 대칭행렬, 최적화로 넘어가는 동기.
-- **2026-09-02 수업 자동 캡션** 및 개인 필기 **「1 Vector」 2페이지**: 내적·노름과 행렬 곱·이차형식을 연결한 부분.
-- ChatGPT 정리본 **「벡터를 외우지 않고 이해하기」**: 행렬로 이어지는 설명의 초안. 수식과 성립 조건은 교안 및 직접 계산으로 확인했다.
+아래 코드는 필기의 null space·왼쪽 역행렬·의사역행렬 예제와 비대칭 반례를 확인한다. NumPy가 설치된 Python에서 독립적으로 실행할 수 있다. 부동소수점 계산이므로 0인지 검사할 때는 근사 비교를 쓴다.
 
-예제 B와 H, 완전제곱 전개, 최소제곱과 Hessian 연결은 이해를 위해 보강했다. 강의 원문이나 과제 해설을 전재하지 않고 개념의 흐름을 다시 설명했다.
+```python
+import numpy as np
+
+np.set_printoptions(precision=4, suppress=True)
+
+# 1. Full row rank지만 입력 방향 하나를 잃는 2x3 행렬
+C = np.array([[1., 0., 1.], [0., 1., 1.]])
+z = np.array([-1., -1., 1.])
+print("C rank / nullity:", np.linalg.matrix_rank(C),
+      C.shape[1] - np.linalg.matrix_rank(C))
+print("C @ z:", C @ z)
+assert np.allclose(C @ z, 0)
+
+# 2. 정확한 복원과 range 밖의 최소제곱 근사
+E = np.array([[1., 0.], [0., 1.], [0., 0.]])
+b = np.array([3., 5., 100.])
+E_plus = np.linalg.pinv(E)
+x_hat, _, _, _ = np.linalg.lstsq(E, b, rcond=None)
+p = E @ x_hat
+r = b - p
+print("x_hat:", x_hat)
+print("projection:", p)
+print("residual:", r)
+print("E+ E is identity:", np.allclose(E_plus @ E, np.eye(2)))
+print("E E+ is identity:", np.allclose(E @ E_plus, np.eye(3)))
+assert np.allclose(E.T @ r, 0)
+assert np.allclose(E_plus @ b, x_hat)
+
+# 3. 다른 왼쪽 역행렬은 range 밖의 b에서 결과가 다르다
+L = np.array([[1., 0., 1.], [0., 1., 0.]])
+assert np.allclose(L @ E, np.eye(2))
+print("another left inverse applied to b:", L @ b)
+
+# 4. Outer product는 PSD이며, 직교하는 입력 방향을 지운다
+u = np.array([1., 2.])
+B = np.outer(u, u)
+print("outer-product eigenvalues:", np.linalg.eigvalsh(B))
+assert np.allclose(B @ np.array([-2., 1.]), 0)
+
+# 5. 비대칭행렬에서는 양의 고유값만으로 충분하지 않다
+M = np.array([[1., 4.], [0., 1.]])
+x = np.array([1., -1.])
+print("nonsymmetric eigenvalues:", np.linalg.eigvals(M))
+print("x^T M x:", x @ M @ x)
+assert np.isclose(x @ M @ x, -2)
+```
+
+출력은 다음과 같다. 매우 작은 반올림 오차의 부호 표시는 환경에 따라 달라질 수 있다.
+
+```text
+C rank / nullity: 2 1
+C @ z: [0. 0.]
+x_hat: [3. 5.]
+projection: [3. 5. 0.]
+residual: [  0.   0. 100.]
+E+ E is identity: True
+E E+ is identity: False
+another left inverse applied to b: [103.   5.]
+outer-product eigenvalues: [0. 5.]
+nonsymmetric eigenvalues: [1. 1.]
+x^T M x: -2.0
+```
+
+## 18. 다시 풀어 볼 질문
+
+1. 행 소거 후의 열벡터를 그대로 원래 column space의 기저로 써도 될까?
+2. 3×2 full column rank 행렬은 모든 3차원 출력을 만들 수 있을까?
+3. LA=I를 만족하는 L은 항상 Moore–Penrose 의사역행렬일까?
+4. 최소제곱 계수 x̂가 여러 개이면 정사영된 출력도 여러 개일까?
+5. 대칭 PSD 행렬에서 xᵀAx=0이면 x가 반드시 영벡터일까?
+6. 고유값이 모두 1인 비대칭행렬은 반드시 이차형식이 양수일까?
+
+<strong>해설:</strong> 1. 일반적으로 안 된다. pivot 위치를 찾고 원래 행렬의 해당 열을 선택한다. 2. 안 된다. range는 3차원 공간 안의 2차원 부분공간이다. 3. 아니다. 왼쪽 역행렬은 여러 개일 수 있다. 4. 아니다. 출력은 유일하며 계수 차이가 null space에 있다. 5. 아니다. x가 null space에 있을 수 있다. 다만 Ax=0은 성립한다. 6. 아니다. 본문의 M과 x=(1,−1)이 반례다.
+
+## 참고한 자료와 보충 설명의 범위
+
+- 개인 손글씨 노트 <strong>「2 Matrix」 1–8페이지</strong>: 행·열 해석, pivot과 rank, null space 예제, 왼쪽 역행렬·최소제곱·의사역행렬, PSD·PD, 마지막의 대칭성과 각도 질문.
+- ENAI601, <strong>Module 1 — Linear Algebra</strong> 접근성 버전 교안: Matrices부터 Range and Nullspace, Inverse, Determinant, Eigenvalues & Eigenvectors, Symmetric Matrices, PSD/PD, outer product까지.
+- <strong>2026-09-09 수업 자동 캡션</strong>: 열의 선형결합, rank–nullity, 행렬식·고유값, 대칭행렬과 PSD/PD, x와 Ax의 내적을 통한 기하학적 해석.
+- <strong>2026-09-16 수업 자동 캡션 도입부</strong>: 행렬 연산·range·null space·역행렬·PD의 복습.
+- [NumPy `lstsq` 공식 문서](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html), [NumPy `pinv` 공식 문서](https://numpy.org/doc/stable/reference/generated/numpy.linalg.pinv.html): 보충 계산 예제의 API와 최소 노름 해·SVD 계산 방식 확인.
+
+왼쪽 역행렬의 비유일성 반례, Moore–Penrose 조건, 이차형식의 대칭 부분, 각도의 영벡터 예외와 엄밀한 조건, 최적화 연결은 필기의 질문을 바탕으로 보강했다. 자동 캡션의 잘못 인식된 차원·기호는 교안과 직접 계산으로 확인했다. 그림은 예제의 좌표와 행렬에서 새로 작성했으며, 필기·강의자료 원문을 첨부하지 않았다.
