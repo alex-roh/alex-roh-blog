@@ -35,7 +35,7 @@ publishedAt: "2026-10-20T12:57:33-04:00"
 # updatedAt: "2026-10-21T09:30:00-04:00"
 tags:
   - python
-series: "ENAI607 Python"
+series: "ENAI607 Python Programming"
 seriesOrder: 3
 ---
 ```

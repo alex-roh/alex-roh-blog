@@ -8,7 +8,7 @@ tags:
   - ENAI601
   - convex-sets
   - optimization
-series: "ENAI601"
+series: "ENAI601 Numerical Methods"
 seriesOrder: 3
 ---
 

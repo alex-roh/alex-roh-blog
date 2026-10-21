@@ -4,7 +4,13 @@ import { href } from './urls';
 export { href } from './urls';
 export const groupSlug = (name: string) => name.replace(/\s/g, '-');
 export const postHref = (post: Post) => href(`${post.id}/`);
-export const seriesHref = (name: string) => href(`series/${encodeURIComponent(groupSlug(name))}/`);
+// Display names can change while existing series bookmarks keep working.
+const stableSeriesSlugs: Record<string, string> = {
+  'ENAI601 Numerical Methods': 'ENAI601',
+  'ENAI607 Python Programming': 'ENAI607-Python',
+};
+export const seriesSlug = (name: string) => stableSeriesSlugs[name] ?? groupSlug(name);
+export const seriesHref = (name: string) => href(`series/${encodeURIComponent(seriesSlug(name))}/`);
 export const tagHref = (name: string) => href(`tags/${encodeURIComponent(name)}/`);
 export const publicationDate = (post: Post) => post.data.publishedAt ? new Date(post.data.publishedAt) : post.data.date;
 export const dateValue = (post: Post) => publicationDate(post)?.getTime() ?? -Infinity;

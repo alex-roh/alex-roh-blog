@@ -1,10 +1,10 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
-import { allPosts, groupSlug, seriesPosts } from '../../lib/posts';
+import { allPosts, seriesSlug, seriesPosts } from '../../lib/posts';
 export async function getStaticPaths() {
  const posts = await allPosts();
- return [...new Set(posts.map(p => p.data.series).filter((x): x is string => !!x))].map(name => ({params:{name:groupSlug(name)},props:{name,posts:seriesPosts(posts,name)}}));
+ return [...new Set(posts.map(p => p.data.series).filter((x): x is string => !!x))].map(name => ({params:{name:seriesSlug(name)},props:{name,posts:seriesPosts(posts,name)}}));
 }
 const { name, posts } = Astro.props;
 ---

@@ -7,7 +7,7 @@ tags:
   - ENAI601
   - convex-functions
   - optimization
-series: "ENAI601"
+series: "ENAI601 Numerical Methods"
 seriesOrder: 4
 updatedAt: "2026-10-21T03:11:44-04:00"
 ---

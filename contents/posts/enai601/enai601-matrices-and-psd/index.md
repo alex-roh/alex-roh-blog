@@ -9,7 +9,7 @@ tags:
   - ENAI601
   - linear-algebra
   - optimization
-series: "ENAI601"
+series: "ENAI601 Numerical Methods"
 seriesOrder: 2
 ---
 

@@ -6,7 +6,7 @@ update: 2026-10-20
 tags:
   - python
   - ENAI607
-series: "ENAI607 Python"
+series: "ENAI607 Python Programming"
 seriesOrder: 2
 ---
 
