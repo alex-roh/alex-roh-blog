@@ -3,7 +3,7 @@ title: "[ENAI601] 03 — Convex Set, 제약조건을 공간의 모양으로 읽�
 description: "열린집합·닫힌집합·compact부터 affine/convex/conic combination과 hull, hyperplane·halfspace·polyhedron, affine image·preimage, supporting hyperplane까지 예제와 증명으로 복습한다."
 date: 2026-10-21
 publishedAt: "2026-10-21T01:28:45-04:00"
-updatedAt: "2026-10-21T02:04:59-04:00"
+updatedAt: "2026-10-21T17:36:03Z"
 tags:
   - ENAI601
   - convex-sets
@@ -16,7 +16,7 @@ seriesOrder: 3
 
 [앞 글의 행렬](/enai601-matrices-and-psd/)이 벡터를 변환하는 규칙이었다면, 이번에는 조건을 만족하는 벡터들을 모아 <strong>공간의 모양</strong>으로 읽는다. 여러 제약조건이 만드는 영역은 어떤 집합이고, 그 안의 두 점을 섞어도 여전히 조건을 만족할까? 이것이 convex set을 공부하는 출발점이다.
 
-이 글은 개인 손글씨 노트 <strong>「3 Convex Set」의 내용이 있는 1–6페이지</strong>, <strong>ENAI601 Module 2 — Convex Sets 교안</strong>, <strong>2026년 9월 16일 수업 캡션</strong>을 대조해 작성했다. 원본을 펼치지 않고도 복습할 수 있도록 정의·예제·반례·짧은 증명을 본문에 담았다. Supporting hyperplane은 교안과 수업에서 보충했고, 최소값 존재 조건과 거리 공식의 유도 등은 개념을 연결하기 위한 보충 설명이다.
+이 글은 개인 손글씨 노트 <strong>「3 Convex Set」의 내용이 있는 1–6페이지</strong>, <strong>ENAI601 Module 2 — Convex Sets 교안</strong>, <strong>2026년 9월 16일 수업</strong>을 대조해 작성했다. 원본을 펼치지 않고도 복습할 수 있도록 정의·예제·반례·짧은 증명을 본문에 담았다. Supporting hyperplane은 교안과 수업에서 보충했고, 최소값 존재 조건과 거리 공식의 유도 등은 개념을 연결하기 위한 보충 설명이다.
 
 이 글의 공간은 유한차원 실수 공간 $\mathbb{R}^{n}$이다. interior·boundary·open·closed는 별도로 말하지 않으면 <strong>주변 공간 $\mathbb{R}^{n}$을 기준</strong>으로 한다. 내적과 거리는 표준 내적과 유클리드 노름을 사용한다.
 
@@ -727,7 +727,7 @@ closed이고 bounded이므로 compact다. 하지만 (1,0),(−1,0)의 중간점�
 
 - 개인 손글씨 노트 <strong>「3 Convex Set」 1–6페이지</strong>: open/closed/compact, interior·closure·boundary, affine/convex combination, convex set, hyperplane의 법선과 거리, halfspace·polyhedron·norm ball, affine image/preimage.
 - ENAI601, <strong>Module 2 — Convex Sets</strong> 접근성 버전 교안: 최적화의 목적함수와 feasible set, 집합의 위상적 성질, combinations/hulls, affine·convex set, 볼록성을 보존하는 연산, supporting hyperplane.
-- <strong>2026-09-16 수업 자동 캡션</strong>: 원판과 원 둘레, open/closed의 반례, affine set, halfspace·polyhedron, 정사각형의 두 affine image 예제, supporting hyperplane.
+- <strong>2026-09-16 수업</strong>: 원판과 원 둘레, open/closed의 반례, affine set, halfspace·polyhedron, 정사각형의 두 affine image 예제, supporting hyperplane.
 - [Boyd·Vandenberghe, Convex Optimization 공개 강의자료 §2.23](https://web.stanford.edu/~boyd/cvxbook/bv_cvxslides.pdf): supporting hyperplane theorem의 조건 확인.
 
-최소값 존재 조건, 상대적 내부, 거리와 정사영 공식의 유도, 볼록성 보존의 증명, 열린집합의 경계에서의 지지 초평면 예제는 복습을 위해 보강했다. 자동 캡션의 차원·기호 인식 오류는 교안과 계산으로 확인했다. 그림은 본문 좌표로 새로 작성했으며 필기나 강의자료 원문을 전재하지 않았다.
+최소값 존재 조건, 상대적 내부, 거리와 정사영 공식의 유도, 볼록성 보존의 증명, 열린집합의 경계에서의 지지 초평면 예제는 복습을 위해 보강했다. 수식의 조건과 계산은 교안과 함께 확인했다. 그림은 본문 좌표로 새로 작성했으며 필기나 강의자료 원문을 전재하지 않았다.

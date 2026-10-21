@@ -3,7 +3,7 @@ title: "[ENAI601] 02 — 행렬에서 PSD까지, 사라지는 방향과 복원�
 description: "직접 쓴 행렬 노트로 복습하는 행·열 관점, rank와 null space, 왼쪽 역행렬·최소제곱·의사역행렬, 고유기저와 PSD. 대칭행렬 조건과 각도 해석까지 연결한다."
 date: 2026-10-21
 publishedAt: "2026-10-21T00:25:14-04:00"
-updatedAt: "2026-10-21T00:29:21-04:00"
+updatedAt: "2026-10-21T17:36:03Z"
 update: 2026-10-21
 tags:
   - ENAI601
@@ -769,8 +769,8 @@ x^T M x: -2.0
 
 - 개인 손글씨 노트 <strong>「2 Matrix」 1–8페이지</strong>: 행·열 해석, pivot과 rank, null space 예제, 왼쪽 역행렬·최소제곱·의사역행렬, PSD·PD, 마지막의 대칭성과 각도 질문.
 - ENAI601, <strong>Module 1 — Linear Algebra</strong> 접근성 버전 교안: Matrices부터 Range and Nullspace, Inverse, Determinant, Eigenvalues & Eigenvectors, Symmetric Matrices, PSD/PD, outer product까지.
-- <strong>2026-09-09 수업 자동 캡션</strong>: 열의 선형결합, rank–nullity, 행렬식·고유값, 대칭행렬과 PSD/PD, $x$와 $Ax$의 내적을 통한 기하학적 해석.
-- <strong>2026-09-16 수업 자동 캡션 도입부</strong>: 행렬 연산·range·null space·역행렬·PD의 복습.
+- <strong>2026-09-09 수업</strong>: 열의 선형결합, rank–nullity, 행렬식·고유값, 대칭행렬과 PSD/PD, $x$와 $Ax$의 내적을 통한 기하학적 해석.
+- <strong>2026-09-16 수업 도입부</strong>: 행렬 연산·range·null space·역행렬·PD의 복습.
 - [NumPy `lstsq` 공식 문서](https://numpy.org/doc/stable/reference/generated/numpy.linalg.lstsq.html), [NumPy `pinv` 공식 문서](https://numpy.org/doc/stable/reference/generated/numpy.linalg.pinv.html): 보충 계산 예제의 API와 최소 노름 해·SVD 계산 방식 확인.
 
-왼쪽 역행렬의 비유일성 반례, Moore–Penrose 조건, 이차형식의 대칭 부분, 각도의 영벡터 예외와 엄밀한 조건, 최적화 연결은 필기의 질문을 바탕으로 보강했다. 자동 캡션의 잘못 인식된 차원·기호는 교안과 직접 계산으로 확인했다. 그림은 예제의 좌표와 행렬에서 새로 작성했으며, 필기·강의자료 원문을 첨부하지 않았다.
+왼쪽 역행렬의 비유일성 반례, Moore–Penrose 조건, 이차형식의 대칭 부분, 각도의 영벡터 예외와 엄밀한 조건, 최적화 연결은 필기의 질문을 바탕으로 보강했다. 예제의 차원·기호는 교안과 직접 계산으로 확인했다. 그림은 예제의 좌표와 행렬에서 새로 작성했으며, 필기·강의자료 원문을 첨부하지 않았다.
