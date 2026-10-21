@@ -2,6 +2,7 @@
 import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { allPosts, postHref, seriesPosts, seriesHref, tagHref, formatDate, excerpt } from '../lib/posts';
+import { formatPublicationTime } from '../lib/publication.mjs';
 export async function getStaticPaths() { return (await allPosts()).map(post => ({params:{slug:post.id},props:{post}})); }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
@@ -14,8 +15,8 @@ const index = posts.findIndex(p => p.id === post.id);
 <Base title={post.data.title} description={excerpt(post)}>
   <div class="article-shell">
     <article class="article">
-      <header class="article-header"><h1>{post.data.title}</h1><div class="article-meta"><b>@Alex</b>{post.data.date && <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>}</div><div class="tags">{post.data.tags.map(tag => <a href={tagHref(tag)}>#{tag}</a>)}</div></header>
-      {related.length > 0 && <section class="series-box" aria-label="같은 시리즈 글"><h2><a href={seriesHref(post.data.series!)}>SERIES: {post.data.series}</a><span>({related.length})</span></h2><ol>{related.map(p => <li><a href={postHref(p)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}{p.id === post.id && <span aria-hidden="true"> ←</span>}</a></li>)}</ol></section>}
+      <header class="article-header"><h1>{post.data.title}</h1><div class="article-meta"><b>@Alex</b>{post.data.publishedAt ? <span>게시 <time datetime={post.data.publishedAt}>{formatPublicationTime(post.data.publishedAt)}</time></span> : post.data.date && <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>}{post.data.updatedAt && <span>수정 <time datetime={post.data.updatedAt}>{formatPublicationTime(post.data.updatedAt)}</time></span>}</div><div class="tags">{post.data.tags.map(tag => <a href={tagHref(tag)}>#{tag}</a>)}</div></header>
+      {related.length > 0 && <section class="series-box" aria-label="같은 시리즈 글"><h2><a href={seriesHref(post.data.series!)}>SERIES: {post.data.series}</a><span>({related.length})</span></h2><ol class="series-list" tabindex="0" aria-label="같은 시리즈 글 전체 목록">{related.map(p => <li><a href={postHref(p)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}{p.id === post.id && <span aria-hidden="true"> ←</span>}</a></li>)}</ol></section>}
       {toc.length > 0 && <details class="mobile-toc"><summary>이 글의 목차</summary><nav aria-label="본문 목차">{toc.map(h => <a class:list={[{sub:h.depth === 3}]} href={`#${h.slug}`}>{h.text}</a>)}</nav></details>}
       <div id="article-body" class="prose"><Content /></div>
       {attachments.length > 0 && <aside class="attachments"><h2>첨부 파일</h2>{attachments.map(name => <a download href={`${import.meta.env.BASE_URL}media/${post.id}/${name}`}>{name} ↓</a>)}</aside>}
@@ -25,6 +26,7 @@ const index = posts.findIndex(p => p.id === post.id);
   </div>
   <script>
     import { revealSearchTarget } from '../lib/search-target.mjs';
+    import { activeHeadingIndex, keepItemVisible } from '../lib/article-navigation.mjs';
     function revealMatch() {
       const root=document.querySelector<HTMLElement>('#article-body')!;
       revealSearchTarget(root,location.hash,new URLSearchParams(location.search).get('search'));
@@ -35,14 +37,25 @@ const index = posts.findIndex(p => p.id === post.id);
     const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
     const headings = links.map(a => document.getElementById(decodeURIComponent(a.hash.slice(1))))!;
     let scheduled = false;
+    let previous = -1;
+    const tocScroller = document.querySelector<HTMLElement>('.toc > div');
     function update() {
-      let active = 0;
-      headings.forEach((h,i) => { if (h && h.getBoundingClientRect().top <= 160) active = i; });
-      links.forEach((a,i) => i === active ? a.setAttribute('aria-current','location') : a.removeAttribute('aria-current'));
+      const atEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+      const active = activeHeadingIndex(headings.map(h => h?.getBoundingClientRect().top ?? Infinity), atEnd);
+      if (active !== previous) {
+        links.forEach((a,i) => i === active ? a.setAttribute('aria-current','location') : a.removeAttribute('aria-current'));
+        keepItemVisible(tocScroller, links[active] ?? null);
+        previous = active;
+      }
       scheduled = false;
     }
     addEventListener('scroll', () => { if (!scheduled) { scheduled=true; requestAnimationFrame(update); } }, {passive:true});
+    addEventListener('resize', () => { previous = -1; update(); });
+    addEventListener('load', () => { previous = -1; update(); }, {once:true});
     update();
+    document.querySelectorAll<HTMLElement>('.series-list').forEach(list => {
+      keepItemVisible(list, list.querySelector<HTMLElement>('[aria-current="page"]'));
+    });
     document.querySelectorAll<HTMLPreElement>('.prose pre').forEach(pre => {
       const button = document.createElement('button');
       button.className='copy-code'; button.textContent='복사'; button.setAttribute('aria-label','코드 복사');

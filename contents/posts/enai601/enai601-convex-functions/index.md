@@ -2,15 +2,17 @@
 title: "[ENAI601] 04 — Convex Function, 기울기의 변화에서 Hessian까지"
 description: "f·f′·f″를 같은 x에서 읽는 직관에서 출발해 chord, 직선 제한, 접선의 전역 하한, gradient·Hessian·PSD로 연결한다. 필기의 흐름에 교안의 sublevel set과 볼록성 보존 연산을 보충했다."
 date: 2026-10-21
+publishedAt: "2026-10-21T02:52:02-04:00"
 tags:
   - ENAI601
   - convex-functions
   - optimization
 series: "ENAI601"
 seriesOrder: 4
+updatedAt: "2026-10-21T03:11:44-04:00"
 ---
 
-Convex function을 이해할 때 출발점은 부등식보다 미분이었다. <strong>f는 높이, f′는 기울기, f″는 기울기의 변화</strong>다. 이 세 가지를 구분하고 나면, 왜 그래프가 chord 아래에 놓이는지, 왜 접선은 함수 전체의 하한이 되는지, 왜 다변수에서는 Hessian을 보는지가 하나의 흐름으로 이어진다.
+Convex function을 이해할 때 출발점은 부등식보다 미분이었다. <strong>f는 높이, $f'$는 기울기, $f''$는 기울기의 변화</strong>다. 이 세 가지를 구분하고 나면, 왜 그래프가 chord 아래에 놓이는지, 왜 접선은 함수 전체의 하한이 되는지, 왜 다변수에서는 Hessian을 보는지가 하나의 흐름으로 이어진다.
 
 이 글은 직접 작성한 <strong>「4 Convex Function」 손글씨 노트 4페이지</strong>와 <strong>ENAI601 Module 3 — Convex Functions 교안</strong>을 바탕으로 작성했다. 필기에서 이해를 쌓아 간 순서를 본문의 중심에 두었다. 미분식과 예제 수치는 직접 검산했고, 원본에 삽입되어 있던 그래프는 함수식으로 새로 그렸다.
 
@@ -18,23 +20,23 @@ Convex function을 이해할 때 출발점은 부등식보다 미분이었다. <
 
 | 필기의 흐름 | 이 글에서 연결할 질문 |
 | --- | --- |
-| 1쪽: f, f′, f″ | 높이·증감·휘어짐은 왜 서로 다른가? |
+| 1쪽: f, $f'$, $f''$ | 높이·증감·휘어짐은 왜 서로 다른가? |
 | 2쪽: convexity와 직선 제한 | 다변수 함수를 한 방향의 1차원 함수로 보면 무엇이 쉬워지는가? |
 | 3쪽: first-order / second-order condition | chord 아래라는 정의가 접선과 곡률의 조건으로 어떻게 바뀌는가? |
 | 4쪽: gradient와 Hessian | 여러 방향의 기울기 변화와 교차항을 어떻게 묶어 판단하는가? |
 
 ## 1. f, f′, f″는 같은 x에서 서로 다른 것을 말한다
 
-필기 첫 페이지의 핵심은 <strong>같은 x를 세 그래프에서 읽는 것</strong>이다. f′ 그래프를 볼 때는 f′ 자체가 증가하는지와 f가 증가하는지를 구별해야 한다.
+필기 첫 페이지의 핵심은 <strong>같은 x를 세 그래프에서 읽는 것</strong>이다. $f'$ 그래프를 볼 때는 $f'$ 자체가 증가하는지와 f가 증가하는지를 구별해야 한다.
 
 | 그 점에서 보는 값 | 해석 |
 | --- | --- |
-| f(x)>0 | 함수의 높이가 x축 위에 있다 |
-| f(x)<0 | 함수의 높이가 x축 아래에 있다 |
-| f′(x)>0 | 그 점에서 오른쪽으로 움직일 때 함수값이 증가하는 방향이다 |
-| f′(x)<0 | 그 점에서 오른쪽으로 움직일 때 함수값이 감소하는 방향이다 |
-| f″(x)>0 | 그 점에서 기울기 f′가 증가하는 방향이다 |
-| f″(x)<0 | 그 점에서 기울기 f′가 감소하는 방향이다 |
+| $f(x)>0$ | 함수의 높이가 x축 위에 있다 |
+| $f(x)<0$ | 함수의 높이가 x축 아래에 있다 |
+| $f'(x)>0$ | 그 점에서 오른쪽으로 움직일 때 함수값이 증가하는 방향이다 |
+| $f'(x)<0$ | 그 점에서 오른쪽으로 움직일 때 함수값이 감소하는 방향이다 |
+| $f''(x)>0$ | 그 점에서 기울기 $f'$가 증가하는 방향이다 |
+| $f''(x)<0$ | 그 점에서 기울기 $f'$가 감소하는 방향이다 |
 
 한 점에서의 미분값은 그 점의 국소 변화율이다. 구간 전체에서 증가·감소나 볼록성을 말하려면 그 구간 전체의 조건을 확인한다.
 
@@ -42,11 +44,11 @@ Convex function을 이해할 때 출발점은 부등식보다 미분이었다. <
 
 ## 2. Concave up은 “함수가 증가한다”가 아니다
 
-필기에서 concave up/down을 먼저 정리한 이유는 f′의 부호와 f″의 부호를 분리하기 위해서다.
+필기에서 concave up/down을 먼저 정리한 이유는 $f'$의 부호와 $f''$의 부호를 분리하기 위해서다.
 
-미분 가능한 함수의 볼록성은 1차원에서 기울기가 <strong>감소하지 않는 것</strong>과 연결된다. 두 번 미분 가능하면 f″≥0으로 판정할 수 있다. f″>0이면 기울기가 엄격하게 증가하는 방향의 곡률이 있다.
+미분 가능한 함수의 볼록성은 1차원에서 기울기가 <strong>감소하지 않는 것</strong>과 연결된다. 두 번 미분 가능하면 $f''\ge0$으로 판정할 수 있다. $f''>0$이면 기울기가 엄격하게 증가하는 방향의 곡률이 있다.
 
-| f′ | f″ | 원래 함수의 움직임 |
+| $f'$ | $f''$ | 원래 함수의 움직임 |
 | --- | --- | --- |
 | 음수 | 음수 | 감소하면서 더 가파르게 내려간다 |
 | 음수 | 양수 | 감소하지만 내려가는 속도가 완만해진다 |
@@ -55,7 +57,7 @@ Convex function을 이해할 때 출발점은 부등식보다 미분이었다. <
 
 영어 미적분에서 <strong>concave up</strong>은 기울기가 증가하는 쪽의 휘어짐이고, convex optimization에서 말하는 convex와 연결된다. <strong>Concave down</strong>은 기울기가 감소하는 쪽이며 concave와 연결된다. U-shape/cap-shape는 직관을 위한 표현이지, 함수가 반드시 대칭이거나 최소·최댓값을 가져야 한다는 조건은 아니다.
 
-예를 들어 e⁻ˣ는 모든 x에서 감소하지만 convex다. 직선은 기울기가 일정해서 convex이면서 concave다. 볼록성의 핵심은 <strong>기울기의 부호가 아니라 기울기가 어떻게 바뀌는가</strong>다.
+예를 들어 $e^{-x}$는 모든 x에서 감소하지만 convex다. 직선은 기울기가 일정해서 convex이면서 concave다. 볼록성의 핵심은 <strong>기울기의 부호가 아니라 기울기가 어떻게 바뀌는가</strong>다.
 
 ## 3. 필기의 예제: x³−3x를 세 그래프에서 읽기
 
@@ -65,7 +67,7 @@ $$
 
 ![f(x)=x³−3x와 도함수 3x²−3, 이계도함수 6x를 같은 x축에서 비교했다. x=−0.5에서의 세 값도 표시했다.](derivatives.svg)
 
-같은 x=−0.5를 대입하면
+같은 $x=-0.5$를 대입하면
 
 $$
 f(-0.5)=1.375,\qquad f'(-0.5)=-2.25,\qquad f''(-0.5)=-3
@@ -73,11 +75,11 @@ $$
 
 이다. 그래프는 x축 위에 있지만, 내려가는 중이고, 기울기가 더 작아지는 방향으로 휘어 있다. 세 값이 동시에 다른 정보를 준다.
 
-x=0.5에서는 f′=−2.25로 같지만 f″=3이다. 이쪽은 내려가면서도 기울기가 덜 음수가 되어 완만해진다. <strong>같은 음의 기울기라도 휘어지는 방향은 다를 수 있다.</strong>
+$x=0.5$에서는 $f'=-2.25$로 같지만 $f''=3$이다. 이쪽은 내려가면서도 기울기가 덜 음수가 되어 완만해진다. <strong>같은 음의 기울기라도 휘어지는 방향은 다를 수 있다.</strong>
 
-이 함수는 x<0에서 f″<0, x>0에서 f″>0이다. 따라서 R 전체에서 convex인 함수가 아니다. 한 점에서 f″가 양수라고 전체 함수가 convex가 되는 것은 아니다.
+이 함수는 x<0에서 f″<0, x>0에서 $f''>0$이다. 따라서 R 전체에서 convex인 함수가 아니다. 한 점에서 $f''$가 양수라고 전체 함수가 convex가 되는 것은 아니다.
 
-또 f′(−1)=f′(1)=0이지만 두 점의 역할은 다르다. −1은 local maximum, 1은 local minimum이다. f″(0)=0인 x=0은 이 예제에서 inflection point이며 극값이 아니다. <strong>f′=0, f″=0이라는 숫자만 떼어서 모든 경우의 결론으로 외우지 않는다.</strong>
+또 $f'(-1)=f'(1)=0$이지만 두 점의 역할은 다르다. −1은 local maximum, 1은 local minimum이다. $f''(0)=0$인 $x=0$은 이 예제에서 inflection point이며 극값이 아니다. <strong>$f'=0$, $f''=0$이라는 숫자만 떼어서 모든 경우의 결론으로 외우지 않는다.</strong>
 
 ## 4. Convex function의 정의: domain과 chord를 함께 본다
 
@@ -96,7 +98,7 @@ $$
 \boxed{f((1-t)x+ty)\le(1-t)f(x)+tf(y)}
 $$
 
-domain이 convex여야 섞은 입력 (1−t)x+ty도 domain 안에 남는다. 그 위에서 실제 함수값을 두 끝 함수값의 가중평균과 비교한다.
+domain이 convex여야 섞은 입력 $(1-t)x+ty$도 domain 안에 남는다. 그 위에서 실제 함수값을 두 끝 함수값의 가중평균과 비교한다.
 
 ### 두 항은 서로 다른 것을 섞는다
 
@@ -114,7 +116,7 @@ $$
 
 따라서 convexity는 <strong>실제 그래프가 chord보다 높게 올라가지 않는다</strong>는 뜻이다.
 
-예를 들어 f(x)=x², x=−1, y=2, t=1/2이면 z=0.5다.
+예를 들어 $f(x)=x^2$, $x=-1$, $y=2$, $t=1/2$이면 $z=0.5$다.
 
 $$
 f(0.5)=0.25\le\frac{f(-1)+f(2)}2=2.5
@@ -124,13 +126,13 @@ $$
 
 ### Domain은 단순한 형식 조건이 아니다
 
-exp(x)의 domain은 R, log(x)의 domain은 (0,∞)다. 둘 다 convex set이다. 반면 1/x를 자연스러운 domain R∖{0} 전체에서 보면 domain 자체가 convex가 아니다. x>0으로 제한하면 그 구간에서 1/x의 convexity를 따로 검토할 수 있다.
+exp(x)의 domain은 R, log(x)의 domain은 $(0,\infty)$다. 둘 다 convex set이다. 반면 1/x를 자연스러운 domain $\mathbb R\setminus\{0\}$ 전체에서 보면 domain 자체가 convex가 아니다. $x>0$으로 제한하면 그 구간에서 1/x의 convexity를 따로 검토할 수 있다.
 
 수식이 같아도 <strong>어떤 domain에서 보는가</strong>에 따라 함수의 볼록성에 관한 주장이 달라진다.
 
 ## 5. Convex set과 convex function을 연결하는 그림
 
-convex function이라고 해서 <strong>그래프 자체가 convex set</strong>인 것은 아니다. x²의 그래프 위 두 점을 이으면 선분 대부분이 그래프에서 떨어져 있다.
+convex function이라고 해서 <strong>그래프 자체가 convex set</strong>인 것은 아니다. $x^2$의 그래프 위 두 점을 이으면 선분 대부분이 그래프에서 떨어져 있다.
 
 보충해서 보면, convex function과 직접 연결되는 집합은 그래프 <strong>위쪽 영역까지 채운 epigraph</strong>다.
 
@@ -152,7 +154,7 @@ $$
 
 x=y이거나 t가 0 또는 1이면 양쪽이 같아지므로 엄격 부등식의 조건에서 제외한다.
 
-<strong>Concave</strong>는 −f가 convex라는 뜻이다. chord 부등호가 반대가 된다. affine function aᵀx+b는 양쪽이 항상 같아서 convex이면서 concave다. 두 점 이상을 포함하는 domain에서 affine function은 strictly convex가 아니다.
+<strong>Concave</strong>는 −f가 convex라는 뜻이다. chord 부등호가 반대가 된다. affine function $a^Tx+b$는 양쪽이 항상 같아서 convex이면서 concave다. 두 점 이상을 포함하는 domain에서 affine function은 strictly convex가 아니다.
 
 ## 6. Restriction to a line: 다변수를 한 방향씩 잘라 보기
 
@@ -206,7 +208,7 @@ $$
 y=y_0+m(x-x_0)
 $$
 
-이다. 함수 그래프의 점이라면 y₀=f(x₀), 그 점의 접선 기울기는 f′(x₀)다.
+이다. 함수 그래프의 점이라면 y₀=f(x₀), 그 점의 접선 기울기는 $f'$(x₀)다.
 
 $$
 \ell_{x_0}(y)=f(x_0)+f'(x_0)(y-x_0)
@@ -214,7 +216,7 @@ $$
 
 여기서 y는 새 <strong>입력 좌표</strong>, ℓ의 값은 접선의 <strong>높이</strong>다. 기호가 겹쳐 혼동되지 않도록 구분한다.
 
-예를 들어 f(x₀)=5, x₀=2, f′(x₀)=3이라면 접선은 ℓ(y)=5+3(y−2)다. y=3에서 접선 높이는 8이다. <strong>실제 f(3)이 정확히 8이라는 뜻은 아니다.</strong> 접선은 우선 국소적인 1차 근사다.
+예를 들어 f(x₀)=5, x₀=2, $f'$(x₀)=3이라면 접선은 ℓ(y)=5+3(y−2)다. y=3에서 접선 높이는 8이다. <strong>실제 f(3)이 정확히 8이라는 뜻은 아니다.</strong> 접선은 우선 국소적인 1차 근사다.
 
 ## 8. First-order condition: 국소 근사가 전역 하한이 된다
 
@@ -225,7 +227,7 @@ $$
 \quad\text{for all }x,y\in D}
 $$
 
-1차원에서는 gradient가 f′(x)로 바뀐다. 어떤 점에서 만든 접선·접평면도 <strong>domain 전체에서 함수보다 위로 올라가지 않는다.</strong> 이것이 global underestimator라는 말의 뜻이다.
+1차원에서는 gradient가 $f'(x)$로 바뀐다. 어떤 점에서 만든 접선·접평면도 <strong>domain 전체에서 함수보다 위로 올라가지 않는다.</strong> 이것이 global underestimator라는 말의 뜻이다.
 
 ![왼쪽은 x²의 그래프 위에 놓이는 chord, 오른쪽은 그래프 아래에 놓이는 접선 2x−1이다.](chord-and-tangent.svg)
 
@@ -243,19 +245,19 @@ $$
 \frac{f(x+t(y-x))-f(x)}{t}\le f(y)-f(x)
 $$
 
-이고 t→0⁺ 극한을 취한 왼쪽이 ∇f(x)ᵀ(y−x)가 된다. 접선은 두 점 사이 chord를 극한으로 좁혀 얻는 하한이다.
+이고 t→0⁺ 극한을 취한 왼쪽이 $\nabla f(x)^T(y-x)$가 된다. 접선은 두 점 사이 chord를 극한으로 좁혀 얻는 하한이다.
 
-반대 방향도 확인할 수 있다. z=(1−t)x+ty에서의 접평면 하한을 x와 y에 각각 적용하고 가중합하면, gradient 항이
+반대 방향도 확인할 수 있다. z=$(1-t)x+ty$에서의 접평면 하한을 x와 y에 각각 적용하고 가중합하면, gradient 항이
 
 $$
 \nabla f(z)^T((1-t)x+ty-z)=0
 $$
 
-으로 사라진다. 남는 식이 f(z)≤(1−t)f(x)+tf(y)다.
+으로 사라진다. 남는 식이 f(z)≤$(1-t)f(x)+tf(y)$다.
 
 ### x²에서 오차까지 직접 계산하기
 
-x=1에서 f′(1)=2이므로 접선은 ℓ(y)=2y−1이다.
+x=1에서 $f'$(1)=2이므로 접선은 $\ell(y)=2y-1$이다.
 
 $$
 f(y)-\ell(y)=y^2-(2y-1)=(y-1)^2\ge0
@@ -265,7 +267,7 @@ $$
 
 ### Gradient가 0이면 왜 전역 최소일까?
 
-convex f에서 ∇f(x*)=0이면 first-order condition으로 모든 y∈D에 대해 f(y)≥f(x*)다. 따라서 x*는 전역 최소점이다.
+convex f에서 $\nabla f(x^*)=0$이면 first-order condition으로 모든 y∈D에 대해 $f(y)\ge f(x^*)$다. 따라서 x*는 전역 최소점이다.
 
 이것은 임의 함수에서 “미분이 0이면 최소”라고 말하는 것과 다르다. 앞의 x³−3x는 미분이 0인 지점에 local maximum도 있었다. 별도의 제약집합에서 최소화하는 문제라면 경계의 최적점에서 gradient가 0일 필요도 없다. 지금의 결론은 위 부등식과 stationary point를 함께 사용한 것이다.
 
@@ -289,7 +291,7 @@ $$
 
 이다. gradient의 성분은 각 좌표축의 기울기이고, d와 내적하면 그 이동 방향에서의 1차 변화량을 얻는다.
 
-직선 제한 g(t)=f(x₀+tv)에서는 chain rule로
+직선 제한 $g(t)=f(x_0+tv)$에서는 chain rule로
 
 $$
 g'(t)=\nabla f(x_0+tv)^Tv
@@ -299,7 +301,7 @@ $$
 
 ## 10. Hessian: 기울기가 여러 방향으로 어떻게 바뀌는가?
 
-필기 마지막 페이지는 “1차원에서 f″를 보던 것을 다변수에서는 어떻게 할까?”라는 질문으로 이어진다. 각 gradient 성분을 다시 각 좌표로 미분한다.
+필기 마지막 페이지는 “1차원에서 $f''$를 보던 것을 다변수에서는 어떻게 할까?”라는 질문으로 이어진다. 각 gradient 성분을 다시 각 좌표로 미분한다.
 
 $$
 H(x)=\nabla^2f(x),\qquad
@@ -334,7 +336,7 @@ f(x+d)=f(x)+\nabla f(x)^Td
 +\frac12d^TH(x)d+o(\|d\|_2^2)
 $$
 
-곡률의 부호를 정하는 것은 행렬의 원소를 따로 보는 대신, <strong>모든 이동 방향 d에 대한 이차형식 dᵀHd</strong>를 보는 것이다. [행렬 글의 PSD](/enai601-matrices-and-psd/)가 여기서 다시 등장한다.
+곡률의 부호를 정하는 것은 행렬의 원소를 따로 보는 대신, <strong>모든 이동 방향 d에 대한 이차형식 $d^THd$</strong>를 보는 것이다. [행렬 글의 PSD](/enai601-matrices-and-psd/)가 여기서 다시 등장한다.
 
 ## 11. Second-order condition은 모든 직선 방향의 곡률 조건이다
 
@@ -355,7 +357,7 @@ f\text{ convex}\quad\Longleftrightarrow\quad
 }
 $$
 
-다. PSD의 정의가 모든 v에 대해 vᵀHv≥0라는 것이므로, 모든 직선 제한의 기울기가 감소하지 않는다는 조건과 일치한다.
+다. PSD의 정의가 모든 v에 대해 $v^THv\ge0$라는 것이므로, 모든 직선 제한의 기울기가 감소하지 않는다는 조건과 일치한다.
 
 여기에는 두 종류의 <strong>모든</strong>이 있다.
 
@@ -388,7 +390,7 @@ f(x_1,x_2)=x_1x_2,\qquad
 H=\begin{bmatrix}0&1\\1&0\end{bmatrix}
 $$
 
-x축에서는 f(t,0)=0이고 y축에서도 f(0,t)=0이다. 두 순수 이계편미분은 모두 0이다. 하지만 v=(1,−1) 방향에서는
+x축에서는 $f(t,0)=0$이고 y축에서도 $f(0,t)=0$이다. 두 순수 이계편미분은 모두 0이다. 하지만 $v=(1,-1)$ 방향에서는
 
 $$
 g(t)=f(t,-t)=-t^2,\qquad
@@ -422,7 +424,7 @@ $$
 f(x)=x^4,\qquad f'(x)=4x^3,\qquad f''(x)=12x^2
 $$
 
-다. f′는 R에서 엄격히 증가하므로 f는 strictly convex지만 f″(0)=0이다. 원점 한 점에서 순간 곡률이 0인 것과 어떤 구간 전체가 직선처럼 평평한 것은 다르다.
+다. $f'$는 R에서 엄격히 증가하므로 f는 strictly convex지만 $f''(0)=0$이다. 원점 한 점에서 순간 곡률이 0인 것과 어떤 구간 전체가 직선처럼 평평한 것은 다르다.
 
 따라서 “Hessian이 PSD이지만 PD가 아닌 점을 찾았다”는 이유만으로 strictly convex가 아니라고 결론 내리지 않는다. 반대로 affine 함수는 Hessian이 모든 곳에서 0이고 strictly convex가 아니다.
 
@@ -440,7 +442,7 @@ $$
 \nabla f(x)=Px+q,\qquad \nabla^2f(x)=P
 $$
 
-이므로 P가 PSD이면 convex, PD이면 strictly convex다. <strong>이 이차함수에서는</strong> 반대로 strictly convex이면 P가 PD다. 일반 함수의 x⁴ 반례와, Hessian이 일정한 이차함수를 구별한다.
+이므로 P가 PSD이면 convex, PD이면 strictly convex다. <strong>이 이차함수에서는</strong> 반대로 strictly convex이면 P가 PD다. 일반 함수의 $x^4$ 반례와, Hessian이 일정한 이차함수를 구별한다.
 
 또 앞 글에서 만난 최소제곱은
 
@@ -450,9 +452,9 @@ f(x)=\|Ax-b\|_2^2,\quad
 \nabla^2f(x)=2A^TA\succeq0
 $$
 
-라서 convex다. A가 full column rank이면 AᵀA가 PD여서 strictly convex이고 최소제곱 계수는 유일하다. rank가 부족하면 null space 방향으로 움직여도 Ax가 같아 목적함수 값이 변하지 않는다.
+라서 convex다. A가 full column rank이면 $A^TA$가 PD여서 strictly convex이고 최소제곱 계수는 유일하다. rank가 부족하면 null space 방향으로 움직여도 Ax가 같아 목적함수 값이 변하지 않는다.
 
-첫 식의 1/2 때문에 Hessian이 P이고, 최소제곱 식에는 1/2가 없어서 2AᵀA라는 계수가 붙는다. 식의 정규화 계수를 함께 확인한다.
+첫 식의 1/2 때문에 Hessian이 P이고, 최소제곱 식에는 1/2가 없어서 $2A^TA$라는 계수가 붙는다. 식의 정규화 계수를 함께 확인한다.
 
 ## 15. 교안 보충: domain 밖을 +∞로 표현하기
 
@@ -467,7 +469,7 @@ f(x),&x\in D,\\
 \end{cases}
 $$
 
-이것은 domain 밖에서도 실제 미분을 하겠다는 뜻이 아니라, <strong>허용되지 않는 입력은 유한한 목적값을 가질 수 없다</strong>고 표시하는 방법이다. 예를 들어 −log x는 x>0에서 convex이고, x≤0에 +∞를 부여하여 domain 제약을 함께 표현할 수 있다.
+이것은 domain 밖에서도 실제 미분을 하겠다는 뜻이 아니라, <strong>허용되지 않는 입력은 유한한 목적값을 가질 수 없다</strong>고 표시하는 방법이다. 예를 들어 $-\log x$는 $x>0$에서 convex이고, $x\le0$에 +∞를 부여하여 domain 제약을 함께 표현할 수 있다.
 
 이후 convex function을 볼 때는 유한한 값을 갖는 domain이 어디인지부터 확인한다. +∞를 보통의 실수처럼 취급해서 Taylor 전개나 미분을 적용하지 않는다.
 
@@ -487,7 +489,7 @@ $$
 
 이기 때문이다. convex function의 부등식 제약이 convex feasible set을 만든다는 연결이다.
 
-하지만 역은 성립하지 않는다. 교안의 반례 f(x)=−eˣ는 f″(x)=−eˣ<0이라 convex가 아니다. 그럼에도 sublevel set은
+하지만 역은 성립하지 않는다. 교안의 반례 $f(x)=-e^x$는 $f''(x)=-e^x<0$이라 convex가 아니다. 그럼에도 sublevel set은
 
 $$
 C_\alpha=\begin{cases}
@@ -504,13 +506,13 @@ $$
 
 ### 비음수 가중합
 
-공통의 convex domain에서 fᵢ가 convex이고 wᵢ≥0이면
+공통의 convex domain에서 fᵢ가 convex이고 $w_i\ge0$이면
 
 $$
 F(x)=\sum_{i=1}^m w_i f_i(x)
 $$
 
-도 convex다. 정의의 부등식들을 음수가 아닌 가중치로 더하면 된다. 음의 가중치를 임의로 넣으면 보존되지 않는다. x²에 −1을 곱한 −x²가 반례다.
+도 convex다. 정의의 부등식들을 음수가 아닌 가중치로 더하면 된다. 음의 가중치를 임의로 넣으면 보존되지 않는다. $x^2$에 −1을 곱한 −$x^2$가 반례다.
 
 ### Affine function과의 합성
 
@@ -521,7 +523,7 @@ g(x)=f(Ax+b),\qquad
 \operatorname{dom}g=\{x:Ax+b\in\operatorname{dom}f\}
 $$
 
-는 convex다. 앞 글에서 affine preimage가 convex임을 배웠으므로 domain 조건도 연결된다. 예를 들어 norm은 convex이므로 ||Ax+b||도 convex다.
+는 convex다. 앞 글에서 affine preimage가 convex임을 배웠으므로 domain 조건도 연결된다. 예를 들어 norm은 convex이므로 $\|Ax+b\|$도 convex다.
 
 ### Pointwise maximum과 supremum
 
@@ -531,7 +533,7 @@ $$
 F(x)=\max_i f_i(x)
 $$
 
-도 convex다. 예를 들어 |x|=max(x,−x)는 두 affine 함수의 최대여서 convex다. x=0에서 미분되지 않아도 정의로는 문제가 없다. 미분 가능성이 convexity의 필수 조건은 아니라는 예다.
+도 convex다. 예를 들어 $|x|=\max(x,-x)$는 두 affine 함수의 최대여서 convex다. $x=0$에서 미분되지 않아도 정의로는 문제가 없다. 미분 가능성이 convexity의 필수 조건은 아니라는 예다.
 
 임의의 비어 있지 않은 함수족에 대한 pointwise supremum에도 같은 볼록성 보존이 성립한다. 다만 값이 +∞가 되는 입력이 있을 수 있으므로 유한한 domain을 확인한다.
 
@@ -547,7 +549,7 @@ v를 고정하면 vᵀXv는 <strong>행렬 변수 X에 대해 선형</strong>이
 
 ### Convex 함수 둘을 합성한다고 항상 convex는 아니다
 
-h(u)=u²와 g(x)=x²−1은 각각 convex지만
+h(u)=u²와 g(x)=$x^2$−1은 각각 convex지만
 
 $$
 (h\circ g)(x)=(x^2-1)^2,\qquad
@@ -571,7 +573,7 @@ $$
 F(x)=\min\{x^2,(x-2)^2\}
 $$
 
-의 양쪽 함수는 convex지만 F(0)=F(2)=0, F(1)=1이라 chord 조건을 어긴다. <strong>Pointwise minimum은 일반적으로 convexity를 보존하지 않는다.</strong>
+의 양쪽 함수는 convex지만 $F(0)=F(2)=0$, $F(1)=1$이라 chord 조건을 어긴다. <strong>Pointwise minimum은 일반적으로 convexity를 보존하지 않는다.</strong>
 
 교안의 보존 정리는 다른 형태다. F(x,y)가 <strong>(x,y)에 대해 jointly convex</strong>이고, y를 움직이는 집합 C가 비어 있지 않은 convex set일 때
 
@@ -588,7 +590,7 @@ F(x,y)=x^2+xy+2y^2
 =2\left(y+\frac x4\right)^2+\frac78x^2
 $$
 
-이다. Hessian은 [[2,1],[1,4]]로 PD이고, 각 x에서 y*=−x/4가 최소를 달성한다. 따라서
+이다. Hessian은 [[2,1],[1,4]]로 PD이고, 각 x에서 $y^*=-x/4$가 최소를 달성한다. 따라서
 
 $$
 g(x)=\inf_y F(x,y)=\frac78x^2
@@ -609,12 +611,12 @@ $$
 
 ## 20. 필기의 흐름을 다시 확인하는 문제
 
-1. f′<0이고 f″>0이면 함수가 증가한다는 뜻인가?
-2. x³−3x에서 x=−0.5일 때 f′와 f″는 각각 얼마인가?
+1. $f'$<0이고 f″>0이면 함수가 증가한다는 뜻인가?
+2. x³−3x에서 $x=-0.5$일 때 $f'$와 $f''$는 각각 얼마인가?
 3. Convexity 부등식의 왼쪽과 오른쪽은 각각 무엇을 섞는가?
-4. x²의 그래프 자체는 convex set인가? epigraph는 어떤가?
-5. x²의 x=1에서의 접선은? 실제 함수값과 접선값의 차이는?
-6. g(t)=f(x₀+tv)에서 t와 v 중 무엇을 변수로 미분하는가?
+4. $x^2$의 그래프 자체는 convex set인가? epigraph는 어떤가?
+5. $x^2$의 x=1에서의 접선은? 실제 함수값과 접선값의 차이는?
+6. $g(t)=f(x_0+tv)$에서 t와 v 중 무엇을 변수로 미분하는가?
 7. Hessian의 대각선이 모두 0 이상이면 PSD라고 결론 내릴 수 있는가?
 8. f가 strictly convex이면 모든 점의 Hessian이 PD인가?
 9. 모든 sublevel set이 convex이면 f도 반드시 convex인가?
@@ -623,19 +625,19 @@ $$
 <strong>해설</strong>
 
 1. 아니다. 감소하면서 기울기가 덜 음수가 되어 완만해진다.
-2. f′=−2.25, f″=−3이다. 기울기가 음수이고 더 감소하는 방향이다.
+2. $f'=-2.25$, $f''=-3$이다. 기울기가 음수이고 더 감소하는 방향이다.
 3. 왼쪽은 입력을 섞은 뒤 계산한 실제 높이, 오른쪽은 끝점의 함수값을 섞은 chord 높이다.
 4. 그래프 자체는 아니다. 그래프 위쪽을 채운 epigraph는 convex다.
-5. ℓ(y)=2y−1이고 f(y)−ℓ(y)=(y−1)²≥0이다.
+5. $\ell(y)=2y-1$이고 $f(y)-\ell(y)=(y-1)^2\ge0$이다.
 6. x₀와 v를 고정하고 스칼라 t로 미분한다.
-7. 아니다. f(x₁,x₂)=x₁x₂의 Hessian과 v=(1,−1)이 반례다.
-8. 아니다. x⁴는 strictly convex지만 f″(0)=0이다.
-9. 아니다. −eˣ는 convex가 아니지만 모든 sublevel set이 convex다.
+7. 아니다. $f(x_1,x_2)=x_1x_2$의 Hessian과 $v=(1,-1)$이 반례다.
+8. 아니다. $x^4$는 strictly convex지만 $f''(0)=0$이다.
+9. 아니다. $-e^x$는 convex가 아니지만 모든 sublevel set이 convex다.
 10. Max는 보존한다. Min은 일반적으로 보존하지 않으며, 본문의 두 제곱함수가 반례다.
 
 ## 참고한 자료와 정리 범위
 
 - 개인 손글씨 노트 <strong>「4 Convex Function」 1–4페이지</strong>: 함수·도함수·이계도함수를 같은 x에서 읽는 방법, slope의 증감, chord의 정의, 직선 제한, first/second-order condition, Hessian의 대각·혼합항 해석.
-- ENAI601, <strong>Module 3 — Convex Functions</strong> 접근성 버전 교안: domain, convex/strictly convex/concave의 정의, 직선 제한, gradient·Hessian, first/second-order condition, x⁴ 반례, 이차함수·최소제곱, extended value, sublevel set, convexity를 보존하는 연산과 예제.
+- ENAI601, <strong>Module 3 — Convex Functions</strong> 접근성 버전 교안: domain, convex/strictly convex/concave의 정의, 직선 제한, gradient·Hessian, first/second-order condition, $x^4$ 반례, 이차함수·최소제곱, extended value, sublevel set, convexity를 보존하는 연산과 예제.
 
 필기의 이해 순서를 유지하면서 미분값과 부등식의 조건을 확인했다. Epigraph 연결, first-order 조건의 유도, xy 방향 반례와 비교표·확인 문제는 이해를 돕기 위해 보강했다. 교안의 log-barrier·log-sum-exp 등 추가 응용을 모두 나열하기보다, 필기의 곡률 흐름과 보존 연산의 핵심을 연결하는 데 집중했다. 그림은 명시한 함수식으로 새로 계산한 결과다.

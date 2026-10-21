@@ -2,6 +2,7 @@
 title: "[ENAI601] 01 — 벡터에서 정사영까지, 직교성이 계산을 바꾸는 이유"
 description: "9월 2일 수업과 벡터 필기로 복습하는 내적·노름·span·기저·정사영·Gram–Schmidt. 공식의 조건과 잔차의 최단거리 성질을 예제로 연결한다."
 date: 2026-10-21
+publishedAt: "2026-10-21T00:25:14-04:00"
 tags:
   - ENAI601
   - linear-algebra

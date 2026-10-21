@@ -2,6 +2,8 @@
 title: "[ENAI601] 03 — Convex Set, 제약조건을 공간의 모양으로 읽기"
 description: "열린집합·닫힌집합·compact부터 affine/convex/conic combination과 hull, hyperplane·halfspace·polyhedron, affine image·preimage, supporting hyperplane까지 예제와 증명으로 복습한다."
 date: 2026-10-21
+publishedAt: "2026-10-21T01:28:45-04:00"
+updatedAt: "2026-10-21T02:04:59-04:00"
 tags:
   - ENAI601
   - convex-sets
