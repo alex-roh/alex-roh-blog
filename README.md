@@ -1,3 +1,5 @@
+> **정식 소스가 이동했습니다.** 현재 블로그와 Decap 편집기는 [alex-roh.github.io/astro-site](https://github.com/alex-roh/alex-roh.github.io/tree/main/astro-site)에서 관리합니다. 이 저장소는 이전 이력을 보존합니다. 앞으로의 글 수정은 정식 저장소 또는 [관리 화면](https://alex-roh.github.io/admin/)에서 해주세요.
+
 # Cave · Alex's blog
 
 Astro 정적 블로그. 기존 Gatsby 블로그의 Markdown 글과 URL을 유지합니다.
@@ -24,14 +26,13 @@ npm run preview
 
 ### 웹에서 기존 글 수정
 
-각 글의 제목 아래에 두 가지 편집 링크가 있습니다.
+글 제목 아래 **수정 · 미리보기**를 누르면 Decap CMS에서 해당 글이 열립니다.
+GitHub 소유자 계정으로 로그인하고 왼쪽 Markdown을 수정하면 오른쪽에서 수식과 본문을 확인할 수 있습니다.
+게시 버튼은 GitHub에 커밋하고 자동 배포를 시작합니다. 아래 알림이 **블로그 반영 완료**로 바뀌면 공개 글을 열어 확인하세요.
+배포 실패·지연 시 알림의 Actions 링크에서 확인합니다. GitHub 원문 편집도 자동 배포됩니다.
 
-- **수정하기**: 해당 글의 GitHub 파일 편집기로 이동합니다. 문장·오타를 고친 뒤 `Commit changes`로 저장합니다.
-- **미리보며 편집**: 해당 글을 GitHub.dev에서 엽니다. 파일을 선택하고 `Ctrl+K`를 누른 뒤 `V`를 눌러 오른쪽에 Markdown 미리보기를 엽니다. `$...$`와 `$$...$$` 수식도 미리볼 수 있습니다. 저장소의 Source Control에서 변경을 커밋해야 GitHub에 저장됩니다.
-
-편집 링크 자체는 쓰기 권한을 부여하지 않습니다. GitHub 로그인과 저장소 쓰기 권한이 필요합니다.
-GitHub.dev는 처음 사용할 때 GitHub 로그인 연결을 요청할 수 있습니다.
-GitHub에 저장한 뒤 실제 사이트에 반영하는 절차는 아래 **실제 사이트 배포**를 따릅니다.
+수식 보존을 위해 본문 편집은 원문 모드로 고정합니다. 실제 사이트와 같은 KaTeX 0.16.47로 미리봅니다.
+기존 글의 최초 게시 시각은 보존하고 CMS에서 수정한 시각은 자동 기록합니다. 표시는 미국 동부 시간입니다.
 
 `contents/posts/<분류>/<고유한-글-주소>/index.md`에 작성합니다.
 이미지와 첨부 파일은 해당 글과 같은 폴더에 둡니다. 실행·빌드 시 public/media로 복사됩니다.
@@ -102,33 +103,35 @@ KaTeX 스타일 패키지는 `rehype-katex`가 사용하는 렌더러와 같은 
 
 ## 실제 사이트 배포
 
-소스 저장소: `alex-roh/alex-roh-blog`
+정식 소스: https://github.com/alex-roh/alex-roh.github.io/tree/main/astro-site
 실제 주소: https://alex-roh.github.io/
+관리 화면: https://alex-roh.github.io/admin/
 
-사용자 사이트 주소를 유지하기 위해 `alex-roh/alex-roh.github.io` 저장소의
-`Deploy Astro to alex-roh.github.io` Actions가 이 저장소의 소스를 가져와
-검사·빌드한 뒤 GitHub Pages에 배포합니다. 별도의 개인 액세스 토큰은 필요하지 않습니다.
+이 프로젝트는 사용자 사이트 저장소의 astro-site 폴더에서 운영합니다.
+해당 폴더 또는 배포 workflow가 main에 변경되면 검사·테스트·빌드 후 자동 배포됩니다.
+다른 저장소를 호출하기 위한 PAT나 유료 서비스는 사용하지 않습니다.
+이전 alex-roh-blog 저장소는 이전 소스 이력으로 보존합니다. 앞으로 글 수정은 정식 저장소에서 합니다.
+기존 Gatsby 파일과 gh-pages 브랜치는 복구용으로 보존합니다.
 
-글을 수정한 뒤:
+### 무료 인증 서비스
 
-1. 이 저장소의 `main`에 Push합니다.
-2. https://github.com/alex-roh/alex-roh.github.io/actions/workflows/deploy-astro.yml
-   에서 Run workflow를 누릅니다. `source_ref`는 기본 `main`으로 둡니다.
-3. 배포가 성공하면 실제 사이트를 확인합니다.
+Cloudflare Workers Free의 cave-cms-auth Worker가 GitHub OAuth 로그인을 처리합니다.
+결제수단 등록·Workers Paid 가입·유료 부가서비스 없이 운영합니다.
+무료 요청 한도 초과 시 인증 기능이 제한되며 자동 유료 전환을 구성하지 않습니다.
+독자의 글 조회는 이 Worker를 호출하지 않습니다.
+코드는 cms/auth/worker.mjs, 배포 설정은 cms/auth/wrangler.toml입니다.
+GitHub App client secret은 Cloudflare 암호화 Secret에만 저장합니다. 저장소와 브라우저 번들에 넣지 않습니다.
+로그인은 alex-roh 계정과 해당 저장소 push 권한을 확인합니다.
+GitHub App을 Only select repositories로 설치하고 alex-roh.github.io 저장소 한 개만 선택합니다.
+권한은 Contents 읽기·쓰기와 Metadata 읽기만 허용합니다. OAuth의 public_repo 범위는 요청하지 않습니다.
+인증 서비스는 설치 대상과 권한이 이 조건을 벗어나면 로그인을 거부합니다.
+사용자 토큰은 만료 시 GitHub로 다시 로그인합니다. 장기 토큰·자동 토큰 갱신 저장소는 사용하지 않습니다.
 
-소스 저장소 Push만으로 실제 사이트가 자동 배포되지는 않습니다.
-배포를 실행할 때 최신 main을 가져오며, 필요하면 source_ref에 특정 커밋을 지정할 수 있습니다.
+### 유지보수
 
-기존 Gatsby 소스와 gh-pages 브랜치는 복구용으로 유지합니다.
-복구가 필요하면 사용자 사이트 저장소 Settings → Pages의 Source를
-Deploy from a branch / gh-pages / (root)로 되돌립니다.
-
-## 선택: 별도 미리보기 배포
-
-이 저장소 Settings → Pages → Source를 GitHub Actions로 설정하고,
-Actions → Deploy preview to GitHub Pages → Run workflow를 실행합니다.
-주소: https://alex-roh.github.io/alex-roh-blog/
-미리보기는 중복 검색 노출을 막기 위해 noindex이며 수동 배포입니다.
+Decap 버전은 package.json에 고정하고 npm ci로 재현합니다. 외부 CDN 최신 스크립트를 실행하지 않습니다.
+빌드에서 CMS 본체와 비동기 청크·라이선스, 미리보기 JS·CSS·KaTeX 폰트를 사이트에 복사합니다.
+CMS 업데이트 후 테스트와 실제 글의 수식·표·이미지·저장을 확인하세요.
 
 ## 이후 확장
 
