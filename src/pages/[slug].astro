@@ -3,6 +3,7 @@ import { render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import { allPosts, postHref, seriesPosts, seriesHref, tagHref, formatDate, excerpt } from '../lib/posts';
 import { formatPublicationTime } from '../lib/publication.mjs';
+import { site } from '../site';
 export async function getStaticPaths() { return (await allPosts()).map(post => ({params:{slug:post.id},props:{post}})); }
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
@@ -11,11 +12,16 @@ const related = post.data.series ? seriesPosts(posts, post.data.series) : [];
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
 const attachments = Object.keys(import.meta.glob('/contents/posts/**/*.{py,pdf,zip}')).filter(p => p.split('/').at(-2) === post.id).map(p => p.split('/').at(-1)!);
 const index = posts.findIndex(p => p.id === post.id);
+const sourceFiles = Object.keys(import.meta.glob('/contents/posts/**/index.md')).filter(path => path.split('/').at(-2) === post.id);
+if (sourceFiles.length !== 1) throw new Error(`Expected one Markdown source for ${post.id}`);
+const sourcePath = sourceFiles[0].slice(1).split('/').map(encodeURIComponent).join('/');
+const editUrl = `https://github.com/${site.sourceRepository}/edit/${encodeURIComponent(site.sourceBranch)}/${sourcePath}`;
+const previewEditUrl = `https://github.dev/${site.sourceRepository}/blob/${encodeURIComponent(site.sourceBranch)}/${sourcePath}`;
 ---
 <Base title={post.data.title} description={excerpt(post)}>
   <div class="article-shell">
     <article class="article">
-      <header class="article-header"><h1>{post.data.title}</h1><div class="article-meta"><b>@Alex</b>{post.data.publishedAt ? <span>게시 <time datetime={post.data.publishedAt}>{formatPublicationTime(post.data.publishedAt)}</time></span> : post.data.date && <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>}{post.data.updatedAt && <span>수정 <time datetime={post.data.updatedAt}>{formatPublicationTime(post.data.updatedAt)}</time></span>}</div><div class="tags">{post.data.tags.map(tag => <a href={tagHref(tag)}>#{tag}</a>)}</div></header>
+      <header class="article-header"><h1>{post.data.title}</h1><div class="article-meta"><b>@Alex</b>{post.data.publishedAt ? <span>게시 <time datetime={post.data.publishedAt}>{formatPublicationTime(post.data.publishedAt)}</time></span> : post.data.date && <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>}{post.data.updatedAt && <span>수정 <time datetime={post.data.updatedAt}>{formatPublicationTime(post.data.updatedAt)}</time></span>}</div><div class="tags">{post.data.tags.map(tag => <a href={tagHref(tag)}>#{tag}</a>)}</div><nav class="article-edit-links" aria-label="글 편집"><a href={editUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub에서 이 글 수정하기 (새 탭)">수정하기 <span aria-hidden="true">↗</span></a><a href={previewEditUrl} target="_blank" rel="noopener noreferrer" title="GitHub.dev에서 Ctrl+K 다음 V로 미리보기 열기" aria-label="GitHub.dev에서 미리보며 편집하기 (새 탭)">미리보며 편집 <span aria-hidden="true">↗</span></a></nav></header>
       {related.length > 0 && <section class="series-box" aria-label="같은 시리즈 글"><h2><a href={seriesHref(post.data.series!)}>SERIES: {post.data.series}</a><span>({related.length})</span></h2><ol class="series-list" tabindex="0" aria-label="같은 시리즈 글 전체 목록">{related.map(p => <li><a href={postHref(p)} aria-current={p.id === post.id ? 'page' : undefined}>{p.data.title}{p.id === post.id && <span aria-hidden="true"> ←</span>}</a></li>)}</ol></section>}
       {toc.length > 0 && <details class="mobile-toc"><summary>이 글의 목차</summary><nav aria-label="본문 목차">{toc.map(h => <a class:list={[{sub:h.depth === 3}]} href={`#${h.slug}`}>{h.text}</a>)}</nav></details>}
       <div id="article-body" class="prose"><Content /></div>

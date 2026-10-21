@@ -36,3 +36,7 @@
 .article-meta time{font-variant-numeric:tabular-nums}
 /* Keep both columns inside the viewport; the TOC shares the article height. */
 @media(min-width:1100px){.article-shell{max-width:1129px;display:grid;grid-template-columns:minmax(0,1fr) 235px;column-gap:44px}.article{min-width:0}.toc{position:relative;left:auto;top:auto;bottom:auto;width:auto;min-width:0}.toc>div{overscroll-behavior:contain;scrollbar-gutter:stable}}
+
+.article-edit-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+.article-edit-links a{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:5px;padding:6px 12px;color:var(--muted);font-size:13px;line-height:1.5}
+.article-edit-links a:hover{background:var(--wash);color:var(--accent);border-color:var(--accent)}

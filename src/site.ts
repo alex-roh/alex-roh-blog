@@ -4,4 +4,6 @@ export const site = {
   author: 'Alex',
   url: 'https://alex-roh.github.io',
   github: 'https://github.com/alex-roh',
+  sourceRepository: 'alex-roh/alex-roh-blog',
+  sourceBranch: 'main',
 };
